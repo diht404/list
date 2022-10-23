@@ -4,7 +4,6 @@
 int main()
 {
 //    setLogFile("logs.txt");
-//    TODO: find first occurrence, search by index
     List list = {};
     ctorList(&list, 1);
     listPush(&list, 69);
@@ -20,6 +19,13 @@ int main()
     listDump(&list);
     listPopHead(&list);
     listDump(&list);
+    size_t position = -7;
+    listElemByIndex(&list, 1, &position);
+    printf("__%zu__\n", position);
+    bool success = false;
+    listFirstOccurence(&list, 31, &position, &success);
+    if (success)
+        printf("{{%zu}}\n", position);
     dtorList(&list);
     closeLogFile();
     return 0;

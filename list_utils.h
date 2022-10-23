@@ -127,4 +127,29 @@ size_t listInsertAfter(List *list, size_t position, Val_t value);
  */
 size_t listInsertBefore(List *list, size_t position, Val_t value);
 
+/**
+ * @brief finds if list first occurrence of value
+ *
+ * @param list list to find
+ * @param value value ot fina
+ * @param position index of first occurrence of value
+ * @param success true if exist, false if not exist
+ * @return error code
+ */
+size_t listFirstOccurence(List *list,
+                          Val_t value,
+                          size_t *position,
+                          bool *success);
+
+/**
+ * @brief searches element by index
+ *
+ * @param list list to search
+ * @param index index to search in array
+ * @param position position of index
+ * @return error code
+ */
+size_t listElemByIndex(List *list,
+                       size_t index,
+                       size_t *position);
 #endif //LIST__LIST_UTILS_H

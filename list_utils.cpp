@@ -37,7 +37,8 @@ size_t resizeList(List *list)
     size_t new_capacity = list->capacity * 2;
 
     Elem_t *new_data = (Elem_t *) realloc(list->data,
-                                          sizeof(Elem_t) * new_capacity);
+                                          sizeof(Elem_t)
+                                              * new_capacity);
 
     if (new_data == nullptr)
     {
@@ -57,7 +58,6 @@ size_t resizeList(List *list)
 
     list->data[prev_free_index].next = old_capacity;
     list->data[old_capacity].prev = prev_free_index;
-
 
     list->data[list->capacity - 1].next = list->free;
     list->data[list->free].prev = list->capacity - 1;
@@ -333,6 +333,55 @@ size_t listPopHead(List *list)
     list->head = next_index;
 
     list->size--;
+
+    return LIST_NO_ERRORS;
+}
+
+size_t listFirstOccurence(List *list,
+                          Val_t value,
+                          size_t *position,
+                          bool *success)
+{
+    if (list == nullptr)
+        return LIST_IS_NULLPTR;
+    if (position == nullptr)
+        return POSITION_IS_NULLPTR;
+
+    size_t num_checked = 0;
+    size_t check_position = list->head;
+
+    while (num_checked < list->size)
+    {
+        if (list->data[check_position].value == value)
+        {
+            *position = check_position;
+            *success = true;
+            return LIST_NO_ERRORS;
+        }
+        check_position = list->data[check_position].next;
+        num_checked++;
+    }
+    *success = false;
+    return LIST_NO_ERRORS;
+}
+
+size_t listElemByIndex(List *list,
+                       size_t index,
+                       size_t *position)
+{
+    if (list == nullptr)
+        return LIST_IS_NULLPTR;
+    if (position == nullptr)
+        return POSITION_IS_NULLPTR;
+
+    size_t num_checked = 0;
+    size_t check_position = list->head;
+
+    for (size_t i = 0; i < index % list->size; i++)
+    {
+        check_position = list->data[check_position].next;
+    }
+    *position = check_position;
 
     return LIST_NO_ERRORS;
 }
