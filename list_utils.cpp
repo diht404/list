@@ -1,4 +1,4 @@
-#include "list.h"
+#include "list_utils.h"
 
 size_t ctorList(List *list, size_t capacity)
 {
@@ -7,6 +7,11 @@ size_t ctorList(List *list, size_t capacity)
 
     if (list->data != nullptr)
         return LIST_DATA_NOT_NULLPTR;
+
+    if (list->alive)
+        return LIST_ALREADY_ALIVE;
+
+    list->alive = true;
 
     list->data = (Elem_t *) calloc(capacity, sizeof(Elem_t));
     list->capacity = capacity;
@@ -43,6 +48,8 @@ size_t dtorList(List *list)
         return LIST_IS_NULLPTR;
 
     free(list->data);
+    list->alive = false;
+
     return LIST_NO_ERRORS;
 }
 

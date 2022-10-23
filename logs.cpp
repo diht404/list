@@ -88,6 +88,9 @@ size_t listVerifier(List *list)
     if (list->size >= list->capacity)
         return LIST_SIZE_MORE_THAN_CAPACITY;
 
+    if (!list->alive)
+        return LIST_NOT_ALIVE;
+
     size_t position = list->free;
     size_t num_verified = 0;
     do
@@ -160,6 +163,18 @@ void logError(size_t error, FILE *fp)
         {
             fprintf(fp,
                     "List size more than capacity.");
+            break;
+        }
+        case LIST_ALREADY_ALIVE:
+        {
+            fprintf(fp,
+                    "Tried to construct list. List already alive.");
+            break;
+        }
+        case LIST_NOT_ALIVE:
+        {
+            fprintf(fp,
+                    "List not alive. Can't work with list.");
             break;
         }
         default:
