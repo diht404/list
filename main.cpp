@@ -4,6 +4,7 @@
 int main()
 {
 //    setLogFile("logs.txt");
+//    TODO: add resize, find first occurrence, search by index
     List list = {};
     ctorList(&list, 16);
     listPush(&list, 69);
