@@ -1,7 +1,9 @@
 #include "list.h"
+#include "logs.h"
 
 int main()
 {
+//    setLogFile("logs.txt");
     List list = {};
     ctorList(&list, 16);
     listPush(&list, 69);
@@ -17,5 +19,6 @@ int main()
     listPopHead(&list);
     listDump(&list);
     dtorList(&list);
+    closeLogFile();
     return 0;
 }

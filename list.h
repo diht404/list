@@ -11,8 +11,8 @@ const Val_t POISONED_VALUE = -7;
 struct Elem_t
 {
     Val_t value = POISONED_VALUE;
-    size_t prev =  0;
-    size_t next =  0;
+    size_t prev = 0;
+    size_t next = 0;
     bool alive = 0;
 };
 
@@ -26,48 +26,46 @@ struct List
     size_t capacity = 0;
 };
 
-enum ERRORS
+enum LIST_ERRORS
 {
-    NO_ERRORS                           = 0,
-    LIST_IS_NULLPTR                     = 1,
-    LIST_DATA_NOT_NULLPTR               = 2,
-    CANT_ALLOCATE_MEMORY                = 3,
-    TRIED_TO_INSERT_AFTER_DEAD_ELEMENT  = 4,
-    TRIED_TO_INSERT_BEFORE_DEAD_ELEMENT = 5,
-    TRIED_TO_POP_FROM_EMPTY_LIST        = 6,
+    LIST_NO_ERRORS = 0,
+    LIST_IS_NULLPTR = 1,
+    LIST_DATA_NOT_NULLPTR = 2,
+    LIST_DATA_IS_NULLPTR = 3,
+    LIST_CANT_ALLOCATE_MEMORY = 4,
+    LIST_TRIED_TO_INSERT_AFTER_DEAD_ELEMENT = 5,
+    LIST_TRIED_TO_INSERT_BEFORE_DEAD_ELEMENT = 6,
+    LIST_TRIED_TO_POP_FROM_EMPTY_LIST = 7,
+    LIST_INTERSECT_ALIVE_AND_DEAD_ARRAYS = 8,
+    LIST_SIZE_MORE_THAN_CAPACITY = 9,
 };
 
 size_t ctorList(List *list, size_t size = 1);
-
-size_t listDump(List *list);
-
-void printElem_t(Val_t elem);
-
-void printNextPrev(size_t value);
 
 size_t resizeList(List *list);
 
 size_t dtorList(List *list);
 
+size_t listPush(List *list, Val_t value);
+
 size_t listPushFront(List *list, Val_t value);
 
 size_t listPushBack(List *list, Val_t value);
 
-size_t listPush(List *list, Val_t value);
+size_t listPushEmpty(List *list, Val_t value);
 
-size_t listSetEmpty(List *list, Val_t value);
+size_t listPop(List *list, size_t position);
 
 size_t listPopTail(List *list);
 
 size_t listPopHead(List *list);
 
-size_t listPop(List *list);
-
 size_t listFront(List *list, size_t *error);
+
+size_t listBack(List *list, size_t *error);
 
 size_t listInsertAfter(List *list, size_t position, Val_t value);
 
 size_t listInsertBefore(List *list, size_t position, Val_t value);
 
-size_t listBack(List *list, size_t *error);
 #endif //LIST__LIST_H
