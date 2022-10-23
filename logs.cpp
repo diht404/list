@@ -41,38 +41,38 @@ size_t listDump(List *list)
     fprintf(LIST_LOG_FILE, "NEXT: ");
     for (size_t i = 0; i < list->capacity; i++)
     {
-        printNextPrev(LIST_LOG_FILE, list->data[i].next);
+        printSize_t(LIST_LOG_FILE, list->data[i].next);
     }
     fprintf(LIST_LOG_FILE, "\n");
 
     fprintf(LIST_LOG_FILE, "IND:  ");
     for (size_t i = 0; i < list->capacity; i++)
     {
-        printNextPrev(LIST_LOG_FILE, i);
+        printSize_t(LIST_LOG_FILE, i);
     }
     fprintf(LIST_LOG_FILE, "\n");
 
     fprintf(LIST_LOG_FILE, "PREV: ");
     for (size_t i = 0; i < list->capacity; i++)
     {
-        printNextPrev(LIST_LOG_FILE, list->data[i].prev);
+        printSize_t(LIST_LOG_FILE, list->data[i].prev);
     }
     fprintf(LIST_LOG_FILE, "\n");
 
     fprintf(LIST_LOG_FILE, "HEAD: ");
-    printNextPrev(LIST_LOG_FILE, list->head);
+    printSize_t(LIST_LOG_FILE, list->head);
     fprintf(LIST_LOG_FILE, "\n");
 
     fprintf(LIST_LOG_FILE, "TAIL: ");
-    printNextPrev(LIST_LOG_FILE, list->tail);
+    printSize_t(LIST_LOG_FILE, list->tail);
     fprintf(LIST_LOG_FILE, "\n");
 
     fprintf(LIST_LOG_FILE, "FREE: ");
-    printNextPrev(LIST_LOG_FILE, list->free);
+    printSize_t(LIST_LOG_FILE, list->free);
     fprintf(LIST_LOG_FILE, "\n");
 
     fprintf(LIST_LOG_FILE, "SIZE: ");
-    printNextPrev(LIST_LOG_FILE, list->size);
+    printSize_t(LIST_LOG_FILE, list->size);
     fprintf(LIST_LOG_FILE, "\n");
     return LIST_NO_ERRORS;
 }
@@ -176,7 +176,7 @@ void printElem_t(FILE *fp, Val_t elem)
     fprintf(fp, "%02d ", elem);
 }
 
-void printNextPrev(FILE *fp, size_t value)
+void printSize_t(FILE *fp, size_t value)
 {
     fprintf(fp, "%02zu ", value);
 }
