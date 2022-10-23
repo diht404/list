@@ -345,7 +345,7 @@ size_t listFirstOccurence(List *list,
     if (list == nullptr)
         return LIST_IS_NULLPTR;
     if (position == nullptr)
-        return POSITION_IS_NULLPTR;
+        return LIST_POSITION_IS_NULLPTR;
 
     size_t num_checked = 0;
     size_t check_position = list->head;
@@ -372,7 +372,7 @@ size_t listElemByIndex(List *list,
     if (list == nullptr)
         return LIST_IS_NULLPTR;
     if (position == nullptr)
-        return POSITION_IS_NULLPTR;
+        return LIST_POSITION_IS_NULLPTR;
 
     size_t num_checked = 0;
     size_t check_position = list->head;

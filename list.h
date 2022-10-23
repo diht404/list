@@ -41,7 +41,7 @@ enum LIST_ERRORS
     LIST_SIZE_MORE_THAN_CAPACITY             =  9,
     LIST_ALREADY_ALIVE                       = 10,
     LIST_NOT_ALIVE                           = 11,
-    POSITION_IS_NULLPTR                      = 12,
+    LIST_POSITION_IS_NULLPTR                 = 12,
     LIST_TRIED_TO_POP_DEAD_ELEMENT           = 13,
 };
 
