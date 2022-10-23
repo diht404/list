@@ -236,7 +236,7 @@ size_t listPop(List *list, size_t position)
         return LIST_IS_NULLPTR;
 
     if (!list->data[position].alive)
-        return LIST_TRIED_TO_INSERT_BEFORE_DEAD_ELEMENT;
+        return LIST_TRIED_TO_POP_DEAD_ELEMENT;
 
     if (position == list->tail)
         return listPopTail(list);
