@@ -1,4 +1,5 @@
 #include "list_utils.h"
+#include "logs.h"
 
 size_t ctorList(List *list, size_t capacity)
 {
@@ -11,9 +12,11 @@ size_t ctorList(List *list, size_t capacity)
     if (list->alive)
         return LIST_ALREADY_ALIVE;
 
-    list->alive = true;
-
     list->data = (Elem_t *) calloc(capacity, sizeof(Elem_t));
+
+    if (list->data == nullptr)
+        return LIST_DATA_IS_NULLPTR;
+
     list->capacity = capacity;
 
     for (size_t i = 0; i < list->capacity; i++)
@@ -23,13 +26,18 @@ size_t ctorList(List *list, size_t capacity)
         list->data[i].value = POISONED_VALUE;
     }
 
+    list->alive = true;
+
     return LIST_NO_ERRORS;
 }
 
 size_t resizeList(List *list)
 {
+    size_t old_capacity = list->capacity;
+    size_t new_capacity = list->capacity * 2;
+
     Elem_t *new_data = (Elem_t *) realloc(list->data,
-                                          list->capacity * 2);
+                                          sizeof(Elem_t) * new_capacity);
 
     if (new_data == nullptr)
     {
@@ -37,8 +45,22 @@ size_t resizeList(List *list)
     }
 
     list->data = new_data;
-    list->capacity *= 2;
 
+    list->capacity = new_capacity;
+    for (size_t i = old_capacity; i < new_capacity; i++)
+    {
+        list->data[i].next = (i + 1) % new_capacity;
+        list->data[i].prev = (i - 1) % new_capacity;
+        list->data[i].value = POISONED_VALUE;
+    }
+    size_t prev_free_index = list->data[list->free].prev;
+
+    list->data[prev_free_index].next = old_capacity;
+    list->data[old_capacity].prev = prev_free_index;
+
+
+    list->data[list->capacity - 1].next = list->free;
+    list->data[list->free].prev = list->capacity - 1;
     return LIST_NO_ERRORS;
 }
 
@@ -67,6 +89,11 @@ size_t listPush(List *list, Val_t value)
 {
     if (list == nullptr)
         return LIST_IS_NULLPTR;
+
+    if (list->capacity - list->size <= 1)
+    {
+        resizeList(list);
+    }
 
     if (list->size == 0)
     {

@@ -74,6 +74,10 @@ size_t listDump(List *list)
     fprintf(LIST_LOG_FILE, "SIZE: ");
     printSize_t(LIST_LOG_FILE, list->size);
     fprintf(LIST_LOG_FILE, "\n");
+
+    fprintf(LIST_LOG_FILE, "CAPACITY: ");
+    printSize_t(LIST_LOG_FILE, list->size);
+    fprintf(LIST_LOG_FILE, "\n");
     return LIST_NO_ERRORS;
 }
 
@@ -85,7 +89,7 @@ size_t listVerifier(List *list)
     if (list->data == nullptr)
         return LIST_DATA_IS_NULLPTR;
 
-    if (list->size >= list->capacity)
+    if (list->size > list->capacity)
         return LIST_SIZE_MORE_THAN_CAPACITY;
 
     if (!list->alive)
@@ -100,7 +104,7 @@ size_t listVerifier(List *list)
         position = list->data[position].next;
         num_verified++;
     }
-    while (position == list->free or num_verified < list->size);
+    while (position == list->free and num_verified < list->size);
 
     return LIST_NO_ERRORS;
 }
@@ -114,73 +118,73 @@ void logError(size_t error, FILE *fp)
     {
         case LIST_IS_NULLPTR:
         {
-            fprintf(fp, "List is nullptr");
+            fprintf(fp, "List is nullptr.\n");
             break;
         }
         case LIST_DATA_NOT_NULLPTR:
         {
             fprintf(fp,
-                    "Tried to run constructor. List data is not nullptr");
+                    "Tried to run constructor. List data is not nullptr.\n");
             break;
         }
         case LIST_DATA_IS_NULLPTR:
         {
             fprintf(fp,
-                    "List is nullptr");
+                    "List is nullptr.\n");
             break;
         }
         case LIST_CANT_ALLOCATE_MEMORY:
         {
             fprintf(fp,
-                    "Can't allocate memory for list data");
+                    "Can't allocate memory for list data.\n");
             break;
         }
         case LIST_TRIED_TO_INSERT_AFTER_DEAD_ELEMENT:
         {
             fprintf(fp,
-                    "Tried to insert to list after dead element.");
+                    "Tried to insert to list after dead element.\n");
             break;
         }
         case LIST_TRIED_TO_INSERT_BEFORE_DEAD_ELEMENT:
         {
             fprintf(fp,
-                    "Tried to insert to list before dead element.");
+                    "Tried to insert to list before dead element.\n");
             break;
         }
         case LIST_TRIED_TO_POP_FROM_EMPTY_LIST:
         {
             fprintf(fp,
-                    "Tried to pop from empty list.");
+                    "Tried to pop from empty list.\n");
             break;
         }
         case LIST_INTERSECT_ALIVE_AND_DEAD_ARRAYS:
         {
             fprintf(fp,
-                    "List arrays of dead and alive elements are intersected.");
+                    "List arrays of dead and alive elements are intersected.\n");
             break;
         }
         case LIST_SIZE_MORE_THAN_CAPACITY:
         {
             fprintf(fp,
-                    "List size more than capacity.");
+                    "List size more than capacity.\n");
             break;
         }
         case LIST_ALREADY_ALIVE:
         {
             fprintf(fp,
-                    "Tried to construct list. List already alive.");
+                    "Tried to construct list. List already alive.\n");
             break;
         }
         case LIST_NOT_ALIVE:
         {
             fprintf(fp,
-                    "List not alive. Can't work with list.");
+                    "List not alive. Can't work with list.\n");
             break;
         }
         default:
         {
             fprintf(fp,
-                    "Unknown error code: %zu", error);
+                    "Unknown error code: %zu.\n", error);
             break;
         }
     }
