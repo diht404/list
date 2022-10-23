@@ -13,6 +13,7 @@ struct Elem_t
     Val_t value = POISONED_VALUE;
     size_t prev =  0;
     size_t next =  0;
+    bool alive = 0;
 };
 
 struct List
@@ -27,10 +28,13 @@ struct List
 
 enum ERRORS
 {
-    NO_ERRORS             = 0,
-    LIST_IS_NULLPTR       = 1,
-    LIST_DATA_NOT_NULLPTR = 2,
-    CANT_ALLOCATE_MEMORY  = 3,
+    NO_ERRORS                           = 0,
+    LIST_IS_NULLPTR                     = 1,
+    LIST_DATA_NOT_NULLPTR               = 2,
+    CANT_ALLOCATE_MEMORY                = 3,
+    TRIED_TO_INSERT_AFTER_DEAD_ELEMENT  = 4,
+    TRIED_TO_INSERT_BEFORE_DEAD_ELEMENT = 5,
+    TRIED_TO_POP_FROM_EMPTY_LIST        = 6,
 };
 
 size_t ctorList(List *list, size_t size = 1);
@@ -52,4 +56,18 @@ size_t listPushBack(List *list, Val_t value);
 size_t listPush(List *list, Val_t value);
 
 size_t listSetEmpty(List *list, Val_t value);
+
+size_t listPopTail(List *list);
+
+size_t listPopHead(List *list);
+
+size_t listPop(List *list);
+
+size_t listFront(List *list, size_t *error);
+
+size_t listInsertAfter(List *list, size_t position, Val_t value);
+
+size_t listInsertBefore(List *list, size_t position, Val_t value);
+
+size_t listBack(List *list, size_t *error);
 #endif //LIST__LIST_H
