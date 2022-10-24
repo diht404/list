@@ -23,11 +23,8 @@ void closeLogFile()
 
 size_t listDump(List *list)
 {
-    if (list == nullptr)
-        return LIST_CANT_ALLOCATE_MEMORY;
-
-    if (list->data == nullptr)
-        return LIST_DATA_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+    CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
 
     logError(listVerifier(list), LIST_LOG_FILE);
 
@@ -83,11 +80,8 @@ size_t listDump(List *list)
 
 size_t listVerifier(List *list)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
-
-    if (list->data == nullptr)
-        return LIST_DATA_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+    CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
 
     if (list->size > list->capacity)
         return LIST_SIZE_MORE_THAN_CAPACITY;
@@ -192,10 +186,16 @@ void logError(size_t error, FILE *fp)
 
 void printElem_t(FILE *fp, Val_t elem)
 {
+    if (fp == nullptr)
+        return;
+
     fprintf(fp, "%2d ", elem);
 }
 
 void printSize_t(FILE *fp, size_t value)
 {
+    if (fp == nullptr)
+        return;
+
     fprintf(fp, "%2zu ", value);
 }

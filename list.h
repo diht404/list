@@ -3,6 +3,7 @@
 
 #include "stdio.h"
 #include "stdlib.h"
+#include "assert.h"
 
 typedef int Val_t;
 
@@ -44,5 +45,13 @@ enum LIST_ERRORS
     LIST_POSITION_IS_NULLPTR                 = 12,
     LIST_TRIED_TO_POP_DEAD_ELEMENT           = 13,
 };
+
+#define CHECK_NULLPTR_ERROR(value, error)  \
+    {                                      \
+        assert(#value && (int)error);      \
+        if (value == nullptr)              \
+            return error;                  \
+    }
+
 
 #endif //LIST__LIST_H

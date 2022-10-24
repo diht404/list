@@ -2,8 +2,7 @@
 
 size_t ctorList(List *list, size_t capacity)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     if (list->data != nullptr)
         return LIST_DATA_NOT_NULLPTR;
@@ -32,6 +31,8 @@ size_t ctorList(List *list, size_t capacity)
 
 size_t resizeList(List *list)
 {
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
     size_t old_capacity = list->capacity;
     size_t new_capacity = list->capacity * 2;
 
@@ -65,8 +66,7 @@ size_t resizeList(List *list)
 
 size_t dtorList(List *list)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     free(list->data);
     list->alive = false;
@@ -76,18 +76,21 @@ size_t dtorList(List *list)
 
 size_t listPushFront(List *list, Val_t value)
 {
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
     return listPush(list, value);
 }
 
 size_t listPushBack(List *list, Val_t value)
 {
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
     return listPush(list, value);
 }
 
 size_t listPush(List *list, Val_t value)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     if (list->capacity - list->size <= 1)
     {
@@ -127,8 +130,7 @@ size_t listPush(List *list, Val_t value)
 
 size_t listPushEmpty(List *list, Val_t value)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     list->data[list->free].value = value;
 
@@ -177,8 +179,7 @@ size_t listBack(List *list, size_t *error)
 
 size_t listInsertAfter(List *list, size_t position, Val_t value)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     if (!list->data[position].alive)
         return LIST_TRIED_TO_INSERT_AFTER_DEAD_ELEMENT;
@@ -218,8 +219,7 @@ size_t listInsertAfter(List *list, size_t position, Val_t value)
 
 size_t listInsertBefore(List *list, size_t position, Val_t value)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     if (!list->data[position].alive)
         return LIST_TRIED_TO_INSERT_BEFORE_DEAD_ELEMENT;
@@ -231,8 +231,7 @@ size_t listInsertBefore(List *list, size_t position, Val_t value)
 
 size_t listPop(List *list, size_t position)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     if (!list->data[position].alive)
         return LIST_TRIED_TO_POP_DEAD_ELEMENT;
@@ -270,8 +269,7 @@ size_t listPop(List *list, size_t position)
 
 size_t listPopTail(List *list)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     if (list->size == 0)
         return LIST_TRIED_TO_POP_FROM_EMPTY_LIST;
@@ -304,8 +302,7 @@ size_t listPopTail(List *list)
 
 size_t listPopHead(List *list)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     if (list->size == 0)
         return LIST_TRIED_TO_POP_FROM_EMPTY_LIST;
@@ -341,10 +338,8 @@ size_t listFirstOccurrence(List *list,
                            size_t *position,
                            bool *success)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
-    if (position == nullptr)
-        return LIST_POSITION_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+    CHECK_NULLPTR_ERROR(position, LIST_POSITION_IS_NULLPTR)
 
     size_t num_checked = 0;
     size_t check_position = list->head;
@@ -368,10 +363,8 @@ size_t listElemByIndex(List *list,
                        size_t index,
                        size_t *position)
 {
-    if (list == nullptr)
-        return LIST_IS_NULLPTR;
-    if (position == nullptr)
-        return LIST_POSITION_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+    CHECK_NULLPTR_ERROR(position, LIST_POSITION_IS_NULLPTR)
 
     size_t num_checked = 0;
     size_t check_position = list->head;
