@@ -1,5 +1,4 @@
 #include "list_utils.h"
-#include "logs.h"
 
 size_t ctorList(List *list, size_t capacity)
 {
