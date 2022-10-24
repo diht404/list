@@ -136,10 +136,10 @@ size_t listInsertBefore(List *list, size_t position, Val_t value);
  * @param success true if exist, false if not exist
  * @return error code
  */
-size_t listFirstOccurence(List *list,
-                          Val_t value,
-                          size_t *position,
-                          bool *success);
+size_t listFirstOccurrence(List *list,
+                           Val_t value,
+                           size_t *position,
+                           bool *success);
 
 /**
  * @brief searches element by index

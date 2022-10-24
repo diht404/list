@@ -23,7 +23,7 @@ int main()
     listElemByIndex(&list, 1, &position);
     printf("__%zu__\n", position);
     bool success = false;
-    listFirstOccurence(&list, 31, &position, &success);
+    listFirstOccurrence(&list, 31, &position, &success);
     if (success)
         printf("{{%zu}}\n", position);
     dtorList(&list);

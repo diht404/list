@@ -336,10 +336,10 @@ size_t listPopHead(List *list)
     return LIST_NO_ERRORS;
 }
 
-size_t listFirstOccurence(List *list,
-                          Val_t value,
-                          size_t *position,
-                          bool *success)
+size_t listFirstOccurrence(List *list,
+                           Val_t value,
+                           size_t *position,
+                           bool *success)
 {
     if (list == nullptr)
         return LIST_IS_NULLPTR;
