@@ -46,11 +46,11 @@ enum LIST_ERRORS
     LIST_TRIED_TO_POP_DEAD_ELEMENT           = 13,
 };
 
-#define CHECK_NULLPTR_ERROR(value, error)  \
-    {                                      \
-        assert(#value && (int)error);      \
-        if (value == nullptr)              \
-            return error;                  \
+#define CHECK_NULLPTR_ERROR(value, error) \
+    {                                     \
+        assert(#value && (int)error);     \
+        if (value == nullptr)             \
+            return error;                 \
     }
 
 
