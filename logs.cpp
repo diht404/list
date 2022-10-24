@@ -192,10 +192,10 @@ void logError(size_t error, FILE *fp)
 
 void printElem_t(FILE *fp, Val_t elem)
 {
-    fprintf(fp, "%02d ", elem);
+    fprintf(fp, "%2d ", elem);
 }
 
 void printSize_t(FILE *fp, size_t value)
 {
-    fprintf(fp, "%02zu ", value);
+    fprintf(fp, "%2zu ", value);
 }
