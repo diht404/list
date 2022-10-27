@@ -39,38 +39,6 @@ size_t listCtor(List *list, size_t capacity)
     return LIST_NO_ERRORS;
 }
 
-size_t listResize(List *list)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-
-    size_t old_capacity = list->capacity;
-    size_t new_capacity = list->capacity * 2;
-
-    Elem_t *new_data = (Elem_t *) realloc(list->data,
-                                          sizeof(Elem_t)
-                                              * new_capacity);
-
-    CHECK_NULLPTR_ERROR(new_data , LIST_CANT_ALLOCATE_MEMORY)
-
-    list->data = new_data;
-
-    list->capacity = new_capacity;
-    for (size_t i = old_capacity; i < new_capacity; i++)
-    {
-        list->data[i].next = (i + 1) % new_capacity;
-        list->data[i].prev = (i - 1) % new_capacity;
-        list->data[i].value = POISONED_VALUE;
-    }
-    size_t prev_free_index = list->data[list->free].prev;
-
-    list->data[prev_free_index].next = old_capacity;
-    list->data[old_capacity].prev = prev_free_index;
-
-    list->data[list->capacity - 1].next = list->free;
-    list->data[list->free].prev = list->capacity - 1;
-    return LIST_NO_ERRORS;
-}
-
 size_t listDtor(List *list)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
@@ -127,31 +95,6 @@ size_t listPush(List *list, Val_t value)
     list->free = next_free_index;
     list->size += 1;
 
-    return LIST_NO_ERRORS;
-}
-
-size_t listPushEmpty(List *list, Val_t value)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-
-    list->data[list->free].value = value;
-
-    // get prev next free indexes
-    size_t prev_free_index = list->data[list->free].prev;
-    size_t next_free_index = list->data[list->free].next;
-
-    // update prev next free elems
-    list->data[prev_free_index].next = next_free_index;
-    list->data[next_free_index].prev = prev_free_index;
-
-    // set new elem params
-    list->data[list->free].next = list->free;
-    list->data[list->free].prev = list->free;
-    list->data[list->free].alive = true;
-    // move free
-    list->free = next_free_index;
-
-    list->size++;
     return LIST_NO_ERRORS;
 }
 
@@ -428,5 +371,37 @@ size_t listLinearize(List *list)
     }
     list->free = list->size;
 
+    return LIST_NO_ERRORS;
+}
+
+size_t listResize(List *list)
+{
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
+    size_t old_capacity = list->capacity;
+    size_t new_capacity = list->capacity * 2;
+
+    Elem_t *new_data = (Elem_t *) realloc(list->data,
+                                          sizeof(Elem_t)
+                                              * new_capacity);
+
+    CHECK_NULLPTR_ERROR(new_data , LIST_CANT_ALLOCATE_MEMORY)
+
+    list->data = new_data;
+
+    list->capacity = new_capacity;
+    for (size_t i = old_capacity; i < new_capacity; i++)
+    {
+        list->data[i].next = (i + 1) % new_capacity;
+        list->data[i].prev = (i - 1) % new_capacity;
+        list->data[i].value = POISONED_VALUE;
+    }
+    size_t prev_free_index = list->data[list->free].prev;
+
+    list->data[prev_free_index].next = old_capacity;
+    list->data[old_capacity].prev = prev_free_index;
+
+    list->data[list->capacity - 1].next = list->free;
+    list->data[list->free].prev = list->capacity - 1;
     return LIST_NO_ERRORS;
 }

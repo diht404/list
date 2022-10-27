@@ -13,14 +13,6 @@
 size_t listCtor(List *list, size_t capacity = 1);
 
 /**
- * @brief resizes list to x2 capacity
- *
- * @param list list to resize
- * @return error code
- */
-size_t listResize(List *list);
-
-/**
  * @brief destructs list
  *
  * @param list list to destruction
@@ -54,15 +46,6 @@ size_t listPushFront(List *list, Val_t value);
  * @return error code
  */
 size_t listPushBack(List *list, Val_t value);
-
-/**
- * @brief pushes to empty list
- *
- * @param list list to push
- * @param value value to push
- * @return error code
- */
-size_t listPushEmpty(List *list, Val_t value);
 
 /**
  * @brief pop from list
@@ -160,5 +143,13 @@ size_t listElemByIndex(List *list,
  * @return error code
  */
 size_t listLinearize(List *list);
+
+/**
+ * @brief resizes list to x2 capacity
+ *
+ * @param list list to resize
+ * @return error code
+ */
+size_t listResize(List *list);
 
 #endif //LIST__LIST_UTILS_H
