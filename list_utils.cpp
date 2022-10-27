@@ -402,8 +402,10 @@ size_t listLinearize(List *list)
 
     for (size_t i = 1; i < list->size; i++)
     {
-        new_data[i].next = 1 + i % (list->capacity - 1);
-        new_data[i].prev = (list->capacity + i - 1) % list->capacity;
+        new_data[i].next = 1 + i % (list->size - 1);
+        new_data[i].prev = (list->size + i - 1) % list->size;
+        if (i == 1)
+            new_data[i].prev = list->size - 1;
         new_data[i].value = list->data[pointer].value;
         pointer = list->data[pointer].next;
     }
@@ -418,6 +420,8 @@ size_t listLinearize(List *list)
     {
         list->data[i].next = (i + 1) % list->capacity;
         list->data[i].prev = (i - 1) % list->capacity;
+        if (i == list->capacity - 1)
+            list->data[i].next = list->size;
         list->data[i].value = POISONED_VALUE;
     }
 

@@ -1,6 +1,9 @@
 #include "logs.h"
 
 FILE *LIST_LOG_FILE = stderr;
+const char * LIST_GRAPH_LOG_FILENAME = "logs";
+
+size_t LIST_GRAPH_LOG_VERSION = 0;
 
 void setLogFile(const char *filename)
 {
@@ -21,60 +24,63 @@ void closeLogFile()
         fclose(LIST_LOG_FILE);
 }
 
-size_t listDump(List *list)
+size_t listDump(List *list, FILE *fp)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
     CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
 
-    logError(listVerifier(list), LIST_LOG_FILE);
+    if (fp == nullptr)
+        fp = LIST_LOG_FILE;
 
-    fprintf(LIST_LOG_FILE, "DATA: ");
+    logError(listVerifier(list), fp);
+
+    fprintf(fp, "DATA: ");
     for (size_t i = 0; i < list->capacity; i++)
     {
-        printElem_t(LIST_LOG_FILE, list->data[i].value);
+        printElem_t(fp, list->data[i].value);
     }
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "NEXT: ");
+    fprintf(fp, "NEXT: ");
     for (size_t i = 0; i < list->capacity; i++)
     {
-        printSize_t(LIST_LOG_FILE, list->data[i].next);
+        printSize_t(fp, list->data[i].next);
     }
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "IND:  ");
+    fprintf(fp, "IND:  ");
     for (size_t i = 0; i < list->capacity; i++)
     {
-        printSize_t(LIST_LOG_FILE, i);
+        printSize_t(fp, i);
     }
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "PREV: ");
+    fprintf(fp, "PREV: ");
     for (size_t i = 0; i < list->capacity; i++)
     {
-        printSize_t(LIST_LOG_FILE, list->data[i].prev);
+        printSize_t(fp, list->data[i].prev);
     }
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "HEAD:     ");
-    printSize_t(LIST_LOG_FILE, list->data[0].next);
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "HEAD:     ");
+    printSize_t(fp, list->data[0].next);
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "TAIL:     ");
-    printSize_t(LIST_LOG_FILE, list->data[0].prev);
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "TAIL:     ");
+    printSize_t(fp, list->data[0].prev);
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "FREE:     ");
-    printSize_t(LIST_LOG_FILE, list->free);
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "FREE:     ");
+    printSize_t(fp, list->free);
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "SIZE:     ");
-    printSize_t(LIST_LOG_FILE, list->size);
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "SIZE:     ");
+    printSize_t(fp, list->size);
+    fprintf(fp, "\n");
 
-    fprintf(LIST_LOG_FILE, "CAPACITY: ");
-    printSize_t(LIST_LOG_FILE, list->capacity);
-    fprintf(LIST_LOG_FILE, "\n");
+    fprintf(fp, "CAPACITY: ");
+    printSize_t(fp, list->capacity);
+    fprintf(fp, "\n");
     return LIST_NO_ERRORS;
 }
 
@@ -182,6 +188,80 @@ void logError(size_t error, FILE *fp)
             break;
         }
     }
+}
+
+void graphLog(List *list)
+{
+    char filename[128] = "";
+    char photo_name[128] = "";
+
+    sprintf(filename, "%s_v.%zu.html", LIST_GRAPH_LOG_FILENAME, LIST_GRAPH_LOG_VERSION);
+    sprintf(photo_name, "%s_v.%zu.jpg", LIST_GRAPH_LOG_FILENAME, LIST_GRAPH_LOG_VERSION);
+
+    FILE *fp = fopen(filename, "w");
+    if (fp == nullptr)
+        return;
+
+    fprintf(fp, "<pre>\n");
+    listDump(list, fp);
+
+    createGraph(list, photo_name);
+
+    fprintf(fp, "<img width=200 src=%s />", photo_name);
+
+    fclose(fp);
+    LIST_GRAPH_LOG_VERSION++;
+}
+
+void createGraph(List *list, const char *filename)
+{
+    FILE *fp = fopen("graph", "w");
+    fprintf(fp, "digraph LIST {\n");
+
+    for (size_t i = 0; i < list->capacity; i++)
+    {
+        fprintf(fp,
+                "    node_%zu[shape=\"rectangle\", label=\""
+                "    VALUE = %d, \n"
+                "    PREV = %zu, \n"
+                "    INDEX = %zu,\n"
+                "    NEXT = %zu\"]\n",
+                i,
+                list->data[i].value,
+                list->data[i].prev,
+                i,
+                list->data[i].next);
+    }
+
+    fprintf(fp, "    edge [style=invis, constraint=true];");
+    for (size_t i = 0; i < list->capacity - 1; i++)
+    {
+        fprintf(fp,
+                "    node_%zu->node_%zu[style=invis];\n",
+                i,
+                (i + 1) % list->capacity);
+    }
+
+    fprintf(fp, "    node_%zu->node_%zu;", list->data[0].prev, 0);
+    fprintf(fp, "    node_%zu->node_%zu;", 0, list->data[0].next);
+
+
+    fprintf(fp, "    edge [style=solid, constraint=true];");
+
+    for (size_t i = 1; i < list->capacity; i++)
+    {
+        fprintf(fp,
+                "    node_%zu->node_%zu\n",
+                i,
+                list->data[i].next);
+    }
+    fprintf(fp, "}\n");
+
+    char command[128] = "";
+    fclose(fp);
+    sprintf(command, "dot graph -T jpg -o %s", filename);
+    system(command);
+//    system("rm graph");
 }
 
 void printElem_t(FILE *fp, Val_t elem)

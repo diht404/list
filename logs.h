@@ -21,7 +21,7 @@ void closeLogFile();
  * @param list list to dump
  * @return error code
  */
-size_t listDump(List *list);
+size_t listDump(List *list, FILE *fp);
 
 /**
  * @brief verifies list
@@ -38,6 +38,11 @@ size_t listVerifier(List *list);
  * @param fp file to log
  */
 void logError(size_t error, FILE *fp);
+
+
+void graphLog(List *list);
+
+void createGraph(List *list, const char *filename);
 
 /**
  * @brief prints element to file
