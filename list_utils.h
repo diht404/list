@@ -160,4 +160,5 @@ size_t listElemByIndex(List *list,
  * @return error code
  */
 size_t listLinearize(List *list);
+
 #endif //LIST__LIST_UTILS_H
