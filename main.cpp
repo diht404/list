@@ -5,7 +5,7 @@ int main()
 {
 //    setLogFile("logs.txt");
     List list = {};
-    listCtor(&list, 1);
+    listCtor(&list, 0);
     listDump(&list, nullptr);
     listPush(&list, 67);
     listPush(&list, 13);
@@ -26,6 +26,9 @@ int main()
     listFirstOccurrence(&list, 31, &position, &success);
     graphDump(&list);
     listLinearize(&list);
+    listDump(&list, nullptr);
+    graphDump(&list);
+    listResizeDown(&list);
     listDump(&list, nullptr);
     graphDump(&list);
     listDtor(&list);

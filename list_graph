@@ -45,61 +45,13 @@ digraph LIST {
         style="rounded, filled", 
         label="
             VALUE = 993 |
-            {{PREV | 5} | {INDEX | 6} | {NEXT | 7}}"]
+            {{PREV | 7} | {INDEX | 6} | {NEXT | 7}}"]
     node_7[shape="record", 
         color="#e87b6b", 
         style="rounded, filled", 
         label="
             VALUE = 993 |
-            {{PREV | 6} | {INDEX | 7} | {NEXT | 8}}"]
-    node_8[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 7} | {INDEX | 8} | {NEXT | 9}}"]
-    node_9[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 8} | {INDEX | 9} | {NEXT | 10}}"]
-    node_10[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 9} | {INDEX | 10} | {NEXT | 11}}"]
-    node_11[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 10} | {INDEX | 11} | {NEXT | 12}}"]
-    node_12[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 11} | {INDEX | 12} | {NEXT | 13}}"]
-    node_13[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 12} | {INDEX | 13} | {NEXT | 14}}"]
-    node_14[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 13} | {INDEX | 14} | {NEXT | 15}}"]
-    node_15[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 14} | {INDEX | 15} | {NEXT | 6}}"]
+            {{PREV | 6} | {INDEX | 7} | {NEXT | 6}}"]
     head->node_1;
     tail->node_5;
     free->node_6;
@@ -125,22 +77,6 @@ digraph LIST {
         node_6;
     node_6->node_7;
         node_7;
-    node_7->node_8;
-        node_8;
-    node_8->node_9;
-        node_9;
-    node_9->node_10;
-        node_10;
-    node_10->node_11;
-        node_11;
-    node_11->node_12;
-        node_12;
-    node_12->node_13;
-        node_13;
-    node_13->node_14;
-        node_14;
-    node_14->node_15;
-        node_15;
-    node_15->node_6;
+    node_7->node_6;
     }
 }

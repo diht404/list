@@ -150,6 +150,23 @@ size_t listLinearize(List *list);
  * @param list list to resize
  * @return error code
  */
-size_t listResize(List *list);
+size_t listResizeUp(List *list);
+
+/**
+ * @brief resizes list to max(capacity/2, capacity - num_free_in_the_end)
+ *
+ * @param list list to resize
+ * @return error code
+ */
+size_t listResizeDown(List *list);
+
+/**
+ * @brief calculates max of two size_t values
+ *
+ * @param lhs first size_t value
+ * @param rhs second size_t value
+ * @return max of two size_t values
+ */
+size_t max(size_t lhs, size_t rhs);
 
 #endif //LIST__LIST_UTILS_H
