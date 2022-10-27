@@ -73,34 +73,6 @@ size_t listPopTail(List *list);
 size_t listPopHead(List *list);
 
 /**
- * @brief returns front position
- *
- * @param list list to pop
- * @param error error code
- * @return front position
- */
-size_t listFront(List *list, size_t *error);
-
-/**
- * @brief returns back position
- *
- * @param list list to pop
- * @param error error code
- * @return back position
- */
-size_t listBack(List *list, size_t *error);
-
-/**
- * @brief inserts value to list after position
- *
- * @param list list to insert
- * @param position position to insert
- * @param value value to insert
- * @return error code
- */
-size_t listInsertAfter(List *list, size_t position, Val_t value);
-
-/**
  * @brief inserts value to list before position
  *
  * @param list list to insert
@@ -111,30 +83,14 @@ size_t listInsertAfter(List *list, size_t position, Val_t value);
 size_t listInsertBefore(List *list, size_t position, Val_t value);
 
 /**
- * @brief finds if list first occurrence of value
+ * @brief inserts value to list after position
  *
- * @param list list to find
- * @param value value ot fina
- * @param position index of first occurrence of value
- * @param success true if exist, false if not exist
+ * @param list list to insert
+ * @param position position to insert
+ * @param value value to insert
  * @return error code
  */
-size_t listFirstOccurrence(List *list,
-                           Val_t value,
-                           size_t *position,
-                           bool *success);
-
-/**
- * @brief searches element by index
- *
- * @param list list to search
- * @param index index to search in array
- * @param position position of index
- * @return error code
- */
-size_t listElemByIndex(List *list,
-                       size_t index,
-                       size_t *position);
+size_t listInsertAfter(List *list, size_t position, Val_t value);
 
 /**
  * @brief linearizes list
@@ -159,6 +115,50 @@ size_t listResizeUp(List *list);
  * @return error code
  */
 size_t listResizeDown(List *list);
+
+/**
+ * @brief finds in list first occurrence (physical index) of value
+ *
+ * @param list list to find
+ * @param value value ot fina
+ * @param position index of first occurrence of value
+ * @param success true if exist, false if not exist
+ * @return error code
+ */
+size_t listFirstOccurrence(List *list,
+                           Val_t value,
+                           size_t *position,
+                           bool *success);
+
+/**
+ * @brief searches element by logical index
+ *
+ * @param list list to search
+ * @param index index to search in array
+ * @param position position of index
+ * @return error code
+ */
+size_t listElemByIndex(List *list,
+                       size_t index,
+                       size_t *position);
+
+/**
+ * @brief returns front position
+ *
+ * @param list list to pop
+ * @param error error code
+ * @return front position
+ */
+size_t listFront(List *list, size_t *error);
+
+/**
+ * @brief returns back position
+ *
+ * @param list list to pop
+ * @param error error code
+ * @return back position
+ */
+size_t listBack(List *list, size_t *error);
 
 /**
  * @brief calculates max of two size_t values
