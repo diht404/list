@@ -153,5 +153,11 @@ size_t listElemByIndex(List *list,
                        size_t index,
                        size_t *position);
 
+/**
+ * @brief linearizes list
+ *
+ * @param list list to linearize
+ * @return error code
+ */
 size_t listLinearize(List *list);
 #endif //LIST__LIST_UTILS_H

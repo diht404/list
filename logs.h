@@ -4,6 +4,12 @@
 #include "list.h"
 
 const char *const GRAPH_FILENAME = "list_graph";
+const char *const PURPLE_COLOR = "\"#a66be8\"";
+const char *const BLUE_COLOR = "\"#6bcce8\"";
+const char *const GREEN_COLOR = "\"#6be871\"";
+const char *const LIGHT_GREEN_COLOR = "\"#caf2d4\"";
+const char *const RED_COLOR = "\"#e87b6b\"";
+const char *const LIGHT_RED_COLOR = "\"#f2d3ca\"";
 
 /**
  * @brief sets log file
@@ -41,8 +47,19 @@ size_t listVerifier(List *list);
  */
 void logError(size_t error, FILE *fp);
 
+/**
+ * @brief creates graphical dump
+ *
+ * @param list list to dump
+ */
 void graphDump(List *list);
 
+/**
+ * @brief creates graph of list
+ *
+ * @param list list with graph
+ * @param filename name of graph
+ */
 void createGraph(List *list, const char *filename);
 
 /**

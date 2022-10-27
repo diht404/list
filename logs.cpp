@@ -1,7 +1,7 @@
 #include "logs.h"
 
 FILE *LIST_LOG_FILE = stderr;
-const char * LIST_GRAPH_LOG_FILENAME = "logs";
+const char *LIST_GRAPH_LOG_FILENAME = "logs";
 
 size_t LIST_GRAPH_LOG_VERSION = 0;
 
@@ -195,8 +195,14 @@ void graphDump(List *list)
     char filename[128] = "";
     char photo_name[128] = "";
 
-    sprintf(filename, "%s_v.%zu.html", LIST_GRAPH_LOG_FILENAME, LIST_GRAPH_LOG_VERSION);
-    sprintf(photo_name, "%s_v.%zu.jpg", LIST_GRAPH_LOG_FILENAME, LIST_GRAPH_LOG_VERSION);
+    sprintf(filename,
+            "%s_v.%zu.html",
+            LIST_GRAPH_LOG_FILENAME,
+            LIST_GRAPH_LOG_VERSION);
+    sprintf(photo_name,
+            "%s_v.%zu.jpg",
+            LIST_GRAPH_LOG_FILENAME,
+            LIST_GRAPH_LOG_VERSION);
 
     FILE *fp = fopen(filename, "w");
     if (fp == nullptr)
@@ -222,12 +228,13 @@ void createGraph(List *list, const char *filename)
 
     // create dummy node
     fprintf(fp, "    node_%zu[shape=\"record\", \n"
-                "        color=\"#a66be8\", \n"
+                "        color=%s, \n"
                 "        style=\"rounded, filled\", \n"
                 "        label=\"DUMMY ELEMENT | \n"
                 "            VALUE = %d | \n"
                 "            {{TAIL | %zu} | {INDEX | %zu} | {HEAD | %zu}}\"\n"
                 "    ]\n", 0,
+            PURPLE_COLOR,
             list->data[0].value,
             list->data[0].prev,
             0,
@@ -235,20 +242,20 @@ void createGraph(List *list, const char *filename)
 
     // create head, tail, free nodes
     fprintf(fp, "    head[shape=\"record\", "
-                "        color=\"#6bcce8\","
+                "        color=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
-                "HEAD\"];\n");
+                "HEAD\"];\n", BLUE_COLOR);
     fprintf(fp, "    tail[shape=\"record\", "
-                "        color=\"#6bcce8\","
+                "        color=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
-                "TAIL\"];\n");
+                "TAIL\"];\n", BLUE_COLOR);
     fprintf(fp, "    free[shape=\"record\", "
-                "        color=\"#6bcce8\","
+                "        color=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
-                "FREE\"];\n");
+                "FREE\"];\n", BLUE_COLOR);
 
     // create data nodes
     for (size_t i = 1; i < list->capacity; i++)
@@ -261,7 +268,7 @@ void createGraph(List *list, const char *filename)
                 "            VALUE = %d |\n"
                 "            {{PREV | %zu} | {INDEX | %zu} | {NEXT | %zu}}\"]\n",
                 i,
-                list->data[i].alive ? "\"#6be871\"": "\"#e87b6b\"",
+                list->data[i].alive ? GREEN_COLOR : RED_COLOR,
                 list->data[i].value,
                 list->data[i].prev,
                 i,
@@ -280,11 +287,13 @@ void createGraph(List *list, const char *filename)
 
 
     // group data nodes
-    fprintf(fp, "    subgraph cluster_data{style=filled;color=\"#caf2d4\"\n");
+    fprintf(fp,
+            "    subgraph cluster_data{style=filled;color=%s\n",
+            LIGHT_GREEN_COLOR);
     fprintf(fp, "        head;\n");
     size_t head = list->data[0].next;
     size_t counter = 0;
-    while(counter < list->size - 1)
+    while (counter < list->size - 1)
     {
         fprintf(fp, "        node_%zu;\n", head);
         fprintf(fp,
@@ -298,7 +307,9 @@ void createGraph(List *list, const char *filename)
     fprintf(fp, "    }\n");
 
     //group free node
-    fprintf(fp, "    subgraph cluster_free{style=filled;color=\"#f2d3ca\"\n");
+    fprintf(fp,
+            "    subgraph cluster_free{style=filled;color=%s\n",
+            LIGHT_RED_COLOR);
     fprintf(fp, "        free;\n");
     size_t free_elem = list->free;
     for (size_t i = 0; i < list->capacity - list->size; i++)
