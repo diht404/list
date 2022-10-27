@@ -1,6 +1,6 @@
 #include "list_utils.h"
 
-size_t ctorList(List *list, size_t capacity)
+size_t listCtor(List *list, size_t capacity)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
     //head = list->data[0].next
@@ -39,7 +39,7 @@ size_t ctorList(List *list, size_t capacity)
     return LIST_NO_ERRORS;
 }
 
-size_t resizeList(List *list)
+size_t listResize(List *list)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
@@ -71,7 +71,7 @@ size_t resizeList(List *list)
     return LIST_NO_ERRORS;
 }
 
-size_t dtorList(List *list)
+size_t listDtor(List *list)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
@@ -101,7 +101,7 @@ size_t listPush(List *list, Val_t value)
 
     if (list->capacity - list->size <= 1)
     {
-        resizeList(list);
+        listResize(list);
     }
 
     list->data[list->free].value = value;
@@ -188,7 +188,7 @@ size_t listInsertAfter(List *list, size_t position, Val_t value)
 
     if (list->capacity - list->size <= 1)
     {
-        resizeList(list);
+        listResize(list);
     }
 
     if (position == list->data[0].prev)
@@ -233,7 +233,7 @@ size_t listInsertBefore(List *list, size_t position, Val_t value)
 
     if (list->capacity - list->size <= 1)
     {
-        resizeList(list);
+        listResize(list);
     }
 
     size_t position_to_insert_after = list->data[position].prev;

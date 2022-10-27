@@ -5,7 +5,7 @@ int main()
 {
 //    setLogFile("logs.txt");
     List list = {};
-    ctorList(&list, 1);
+    listCtor(&list, 1);
     listDump(&list, nullptr);
     listPush(&list, 67);
     listPush(&list, 13);
@@ -28,7 +28,7 @@ int main()
     listLinearize(&list);
     listDump(&list, nullptr);
     graphDump(&list);
-    dtorList(&list);
+    listDtor(&list);
     closeLogFile();
     return 0;
 }

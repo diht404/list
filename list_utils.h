@@ -7,10 +7,10 @@
  * @brief constructor for list
  *
  * @param list list to construct
- * @param size size of array of list
+ * @param capacity size of array of list
  * @return error code
  */
-size_t ctorList(List *list, size_t size = 1);
+size_t listCtor(List *list, size_t capacity = 1);
 
 /**
  * @brief resizes list to x2 capacity
@@ -18,7 +18,7 @@ size_t ctorList(List *list, size_t size = 1);
  * @param list list to resize
  * @return error code
  */
-size_t resizeList(List *list);
+size_t listResize(List *list);
 
 /**
  * @brief destructs list
@@ -26,7 +26,7 @@ size_t resizeList(List *list);
  * @param list list to destruction
  * @return error code
  */
-size_t dtorList(List *list);
+size_t listDtor(List *list);
 
 /**
  * @brief pushes value to list
