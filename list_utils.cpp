@@ -408,6 +408,7 @@ size_t listLinearize(List *list)
             new_data[i].prev = list->size - 1;
         new_data[i].value = list->data[pointer].value;
         pointer = list->data[pointer].next;
+        new_data[i].alive = true;
     }
 
     new_data[0].next = 1;

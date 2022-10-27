@@ -215,7 +215,8 @@ void graphLog(List *list)
 
 void createGraph(List *list, const char *filename)
 {
-    FILE *fp = fopen("graph", "w");
+
+    FILE *fp = fopen(GRAPH_FILENAME, "w");
     fprintf(fp, "digraph LIST {\n"
                 "    rankdir=LR;\n");
 
@@ -265,6 +266,7 @@ void createGraph(List *list, const char *filename)
                 list->data[i].prev,
                 i,
                 list->data[i].next);
+        printf("alive %zu %d\n", i, (int) list->data[i].alive);
     }
 
     // lines from head, tail, free to their nodes
@@ -279,7 +281,7 @@ void createGraph(List *list, const char *filename)
 
 
     // group data nodes
-    fprintf(fp, "    subgraph cluster_data{\n");
+    fprintf(fp, "    subgraph cluster_data{style=filled;color=\"#caf2d4\"\n");
     fprintf(fp, "        head;\n");
     size_t head = list->data[0].next;
     size_t counter = 0;
@@ -297,7 +299,7 @@ void createGraph(List *list, const char *filename)
     fprintf(fp, "    }\n");
 
     //group free node
-    fprintf(fp, "    subgraph cluster_free{\n");
+    fprintf(fp, "    subgraph cluster_free{style=filled;color=\"#f2d3ca\"\n");
     fprintf(fp, "        free;\n");
     size_t free_elem = list->free;
     for (size_t i = 0; i < list->capacity - list->size; i++)
@@ -316,9 +318,10 @@ void createGraph(List *list, const char *filename)
 
     char command[128] = "";
     fclose(fp);
-    sprintf(command, "dot graph -T jpg -o %s", filename);
+    sprintf(command, "dot %s -T jpg -o %s", GRAPH_FILENAME, filename);
     system(command);
-//    system("rm graph");
+//    sprintf(command, "rm %s", GRAPH_FILENAME);
+//    system(command);
 }
 
 void printElem_t(FILE *fp, Val_t elem)

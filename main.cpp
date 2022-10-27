@@ -22,12 +22,9 @@ int main()
     listDump(&list, nullptr);
     size_t position = -7;
     listElemByIndex(&list, 1, &position);
-    printf("__%zu__\n", position);
     bool success = false;
     listFirstOccurrence(&list, 31, &position, &success);
-    if (success)
-        printf("{{%zu}}\n", position);
-//    listLinearize(&list);
+    listLinearize(&list);
     listDump(&list, nullptr);
     graphLog(&list);
     dtorList(&list);

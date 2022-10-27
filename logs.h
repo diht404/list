@@ -3,6 +3,8 @@
 
 #include "list.h"
 
+const char *const GRAPH_FILENAME = "list_graph";
+
 /**
  * @brief sets log file
  *
