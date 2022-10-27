@@ -6,6 +6,7 @@ int main()
 //    setLogFile("logs.txt");
     List list = {};
     ctorList(&list, 1);
+    listDump(&list);
     listPush(&list, 67);
     listPush(&list, 13);
     listPush(&list, 31);

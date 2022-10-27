@@ -4,10 +4,11 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "assert.h"
+#include "limits.h"
 
 typedef int Val_t;
 
-const Val_t POISONED_VALUE = -7;
+const Val_t POISONED_VALUE = 993;
 
 struct Elem_t
 {
@@ -20,8 +21,6 @@ struct Elem_t
 struct List
 {
     Elem_t *data = nullptr;
-    size_t head = 0;
-    size_t tail = 0;
     size_t free = 0;
     size_t size = 0;
     size_t capacity = 0;

@@ -56,24 +56,24 @@ size_t listDump(List *list)
     }
     fprintf(LIST_LOG_FILE, "\n");
 
-    fprintf(LIST_LOG_FILE, "HEAD: ");
-    printSize_t(LIST_LOG_FILE, list->head);
+    fprintf(LIST_LOG_FILE, "HEAD:     ");
+    printSize_t(LIST_LOG_FILE, list->data[0].next);
     fprintf(LIST_LOG_FILE, "\n");
 
-    fprintf(LIST_LOG_FILE, "TAIL: ");
-    printSize_t(LIST_LOG_FILE, list->tail);
+    fprintf(LIST_LOG_FILE, "TAIL:     ");
+    printSize_t(LIST_LOG_FILE, list->data[0].prev);
     fprintf(LIST_LOG_FILE, "\n");
 
-    fprintf(LIST_LOG_FILE, "FREE: ");
+    fprintf(LIST_LOG_FILE, "FREE:     ");
     printSize_t(LIST_LOG_FILE, list->free);
     fprintf(LIST_LOG_FILE, "\n");
 
-    fprintf(LIST_LOG_FILE, "SIZE: ");
+    fprintf(LIST_LOG_FILE, "SIZE:     ");
     printSize_t(LIST_LOG_FILE, list->size);
     fprintf(LIST_LOG_FILE, "\n");
 
     fprintf(LIST_LOG_FILE, "CAPACITY: ");
-    printSize_t(LIST_LOG_FILE, list->size);
+    printSize_t(LIST_LOG_FILE, list->capacity);
     fprintf(LIST_LOG_FILE, "\n");
     return LIST_NO_ERRORS;
 }
@@ -189,7 +189,7 @@ void printElem_t(FILE *fp, Val_t elem)
     if (fp == nullptr)
         return;
 
-    fprintf(fp, "%2d ", elem);
+    fprintf(fp, "%8d ", elem);
 }
 
 void printSize_t(FILE *fp, size_t value)
@@ -197,5 +197,5 @@ void printSize_t(FILE *fp, size_t value)
     if (fp == nullptr)
         return;
 
-    fprintf(fp, "%2zu ", value);
+    fprintf(fp, "%8zu ", value);
 }
