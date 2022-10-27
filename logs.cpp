@@ -190,7 +190,7 @@ void logError(size_t error, FILE *fp)
     }
 }
 
-void graphLog(List *list)
+void graphDump(List *list)
 {
     char filename[128] = "";
     char photo_name[128] = "";
@@ -266,7 +266,6 @@ void createGraph(List *list, const char *filename)
                 list->data[i].prev,
                 i,
                 list->data[i].next);
-        printf("alive %zu %d\n", i, (int) list->data[i].alive);
     }
 
     // lines from head, tail, free to their nodes

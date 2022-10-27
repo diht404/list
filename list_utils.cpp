@@ -413,6 +413,7 @@ size_t listLinearize(List *list)
 
     new_data[0].next = 1;
     new_data[0].prev = list->size - 1;
+    new_data[0].value = POISONED_VALUE;
 
     free(list->data);
     list->data = new_data;

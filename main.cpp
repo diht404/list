@@ -24,9 +24,10 @@ int main()
     listElemByIndex(&list, 1, &position);
     bool success = false;
     listFirstOccurrence(&list, 31, &position, &success);
+    graphDump(&list);
     listLinearize(&list);
     listDump(&list, nullptr);
-    graphLog(&list);
+    graphDump(&list);
     dtorList(&list);
     closeLogFile();
     return 0;

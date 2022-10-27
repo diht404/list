@@ -41,8 +41,7 @@ size_t listVerifier(List *list);
  */
 void logError(size_t error, FILE *fp);
 
-
-void graphLog(List *list);
+void graphDump(List *list);
 
 void createGraph(List *list, const char *filename);
 
