@@ -27,6 +27,8 @@ int main()
     listFirstOccurrence(&list, 31, &position, &success);
     if (success)
         printf("{{%zu}}\n", position);
+    listLinearize(&list);
+    listDump(&list);
     dtorList(&list);
     closeLogFile();
     return 0;

@@ -16,8 +16,7 @@ size_t ctorList(List *list, size_t capacity)
 
     list->data = (Elem_t *) calloc(capacity, sizeof(Elem_t));
 
-    if (list->data == nullptr)
-        return LIST_DATA_IS_NULLPTR;
+    CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
 
     list->capacity = capacity;
 
@@ -51,10 +50,7 @@ size_t resizeList(List *list)
                                           sizeof(Elem_t)
                                               * new_capacity);
 
-    if (new_data == nullptr)
-    {
-        return LIST_CANT_ALLOCATE_MEMORY;
-    }
+    CHECK_NULLPTR_ERROR(new_data , LIST_CANT_ALLOCATE_MEMORY)
 
     list->data = new_data;
 
@@ -394,3 +390,36 @@ size_t listElemByIndex(List *list,
     return LIST_NO_ERRORS;
 }
 
+size_t listLinearize(List *list)
+{
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
+    Elem_t *new_data =(Elem_t *)calloc(list->capacity, sizeof(new_data[0]));
+
+    CHECK_NULLPTR_ERROR(new_data, LIST_CANT_ALLOCATE_MEMORY)
+
+    size_t pointer = list->data[0].next;
+
+    for (size_t i = 1; i < list->size; i++)
+    {
+        new_data[i].next = 1 + i % (list->capacity - 1);
+        new_data[i].prev = (list->capacity + i - 1) % list->capacity;
+        new_data[i].value = list->data[pointer].value;
+        pointer = list->data[pointer].next;
+    }
+
+    new_data[0].next = 1;
+    new_data[0].prev = list->size - 1;
+
+    free(list->data);
+    list->data = new_data;
+
+    for (size_t i = list->size; i < list->capacity; i++)
+    {
+        list->data[i].next = (i + 1) % list->capacity;
+        list->data[i].prev = (i - 1) % list->capacity;
+        list->data[i].value = POISONED_VALUE;
+    }
+
+    return LIST_NO_ERRORS;
+}
