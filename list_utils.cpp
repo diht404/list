@@ -424,6 +424,7 @@ size_t listLinearize(List *list)
             list->data[i].next = list->size;
         list->data[i].value = POISONED_VALUE;
     }
+    list->free = list->size;
 
     return LIST_NO_ERRORS;
 }

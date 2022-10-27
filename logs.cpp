@@ -216,45 +216,102 @@ void graphLog(List *list)
 void createGraph(List *list, const char *filename)
 {
     FILE *fp = fopen("graph", "w");
-    fprintf(fp, "digraph LIST {\n");
+    fprintf(fp, "digraph LIST {\n"
+                "    rankdir=LR;\n");
 
-    for (size_t i = 0; i < list->capacity; i++)
+    // create dummy node
+    fprintf(fp, "    node_%zu[shape=\"record\", \n"
+                "        color=\"#a66be8\", \n"
+                "        style=\"rounded, filled\", \n"
+                "        label=\"DUMMY ELEMENT | \n"
+                "            VALUE = %d | \n"
+                "            {{TAIL | %zu} | {INDEX | %zu} | {HEAD | %zu}}\"\n"
+                "    ]\n", 0,
+            list->data[0].value,
+            list->data[0].prev,
+            0,
+            list->data[0].next);
+
+    // create head, tail, free nodes
+    fprintf(fp, "    head[shape=\"record\", "
+                "        color=\"#6bcce8\","
+                "        style=\"rounded, filled\","
+                "        label = \""
+                "HEAD\"];\n");
+    fprintf(fp, "    tail[shape=\"record\", "
+                "        color=\"#6bcce8\","
+                "        style=\"rounded, filled\","
+                "        label = \""
+                "TAIL\"];\n");
+    fprintf(fp, "    free[shape=\"record\", "
+                "        color=\"#6bcce8\","
+                "        style=\"rounded, filled\","
+                "        label = \""
+                "FREE\"];\n");
+
+    // create data nodes
+    for (size_t i = 1; i < list->capacity; i++)
     {
         fprintf(fp,
-                "    node_%zu[shape=\"rectangle\", label=\""
-                "    VALUE = %d, \n"
-                "    PREV = %zu, \n"
-                "    INDEX = %zu,\n"
-                "    NEXT = %zu\"]\n",
+                "    node_%zu[shape=\"record\", \n"
+                "        color=%s, \n"
+                "        style=\"rounded, filled\", \n"
+                "        label=\"\n"
+                "            VALUE = %d |\n"
+                "            {{PREV | %zu} | {INDEX | %zu} | {NEXT | %zu}}\"]\n",
                 i,
+                list->data[i].alive ? "\"#6be871\"": "\"#e87b6b\"",
                 list->data[i].value,
                 list->data[i].prev,
                 i,
                 list->data[i].next);
     }
 
-    fprintf(fp, "    edge [style=invis, constraint=true];");
-    for (size_t i = 0; i < list->capacity - 1; i++)
+    // lines from head, tail, free to their nodes
+    fprintf(fp, "    head->node_%zu;\n", list->data[0].next);
+    fprintf(fp, "    tail->node_%zu;\n", list->data[0].prev);
+    fprintf(fp, "    free->node_%zu;\n", list->free);
+
+    //lines from dummy node to head, tail, free
+    fprintf(fp, "    node_0->head;\n");
+    fprintf(fp, "    node_0->tail;\n");
+    fprintf(fp, "    node_0->free;\n");
+
+
+    // group data nodes
+    fprintf(fp, "    subgraph cluster_data{\n");
+    fprintf(fp, "        head;\n");
+    size_t head = list->data[0].next;
+    size_t counter = 0;
+    while(counter < list->size - 1)
     {
+        fprintf(fp, "        node_%zu;\n", head);
         fprintf(fp,
-                "    node_%zu->node_%zu[style=invis];\n",
-                i,
-                (i + 1) % list->capacity);
+                "    node_%zu->node_%zu;\n",
+                head,
+                list->data[head].next);
+        head = list->data[head].next;
+        counter++;
     }
+    fprintf(fp, "        tail;\n");
+    fprintf(fp, "    }\n");
 
-    fprintf(fp, "    node_%zu->node_%zu;", list->data[0].prev, 0);
-    fprintf(fp, "    node_%zu->node_%zu;", 0, list->data[0].next);
-
-
-    fprintf(fp, "    edge [style=solid, constraint=true];");
-
-    for (size_t i = 1; i < list->capacity; i++)
+    //group free node
+    fprintf(fp, "    subgraph cluster_free{\n");
+    fprintf(fp, "        free;\n");
+    size_t free_elem = list->free;
+    for (size_t i = 0; i < list->capacity - list->size; i++)
     {
+        fprintf(fp, "        node_%zu;\n", free_elem);
         fprintf(fp,
-                "    node_%zu->node_%zu\n",
-                i,
-                list->data[i].next);
+                "    node_%zu->node_%zu;\n",
+                free_elem,
+                list->data[free_elem].next);
+        free_elem = list->data[free_elem].next;
     }
+    fprintf(fp, "    }\n");
+
+    // close graph with }
     fprintf(fp, "}\n");
 
     char command[128] = "";
