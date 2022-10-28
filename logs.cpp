@@ -104,7 +104,7 @@ size_t listVerifier(List *list)
         position = list->data[position].next;
         num_verified++;
     }
-    while (position == list->free and num_verified < list->size);
+    while (num_verified < list->capacity - list->size);
 
     return LIST_NO_ERRORS;
 }
@@ -303,6 +303,20 @@ void createGraph(List *list, const char *filename)
         head = list->data[head].next;
         counter++;
     }
+
+    size_t tail = list->data[0].prev;
+    counter = 0;
+    while (counter < list->size - 1)
+    {
+        fprintf(fp, "        node_%zu;\n", tail);
+        fprintf(fp,
+                "    node_%zu->node_%zu[style=dashed];\n",
+                tail,
+                list->data[tail].prev);
+        tail = list->data[tail].prev;
+        counter++;
+    }
+
     fprintf(fp, "        tail;\n");
     fprintf(fp, "    }\n");
 
@@ -320,6 +334,15 @@ void createGraph(List *list, const char *filename)
                 free_elem,
                 list->data[free_elem].next);
         free_elem = list->data[free_elem].next;
+    }
+    for (size_t i = 0; i < list->capacity - list->size; i++)
+    {
+        fprintf(fp, "        node_%zu;\n", free_elem);
+        fprintf(fp,
+                "    node_%zu->node_%zu[style=dashed];\n",
+                free_elem,
+                list->data[free_elem].prev);
+        free_elem = list->data[free_elem].prev;
     }
     fprintf(fp, "    }\n");
 
