@@ -10,3 +10,6 @@
 /cmake_install.cmake
 /Testing/Temporary/LastTest.log
 /list
+/logs.html
+/logs_logical_order_v.*.jpg
+/logs_physical_order_v.*.jpg

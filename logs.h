@@ -19,6 +19,11 @@ const char *const LIGHT_RED_COLOR   = "\"#f2d3ca\"";
 void setLogFile(const char *filename);
 
 /**
+ * @brief clears graph log file
+ */
+void clearGraphLogFile();
+
+/**
  * @brief closes log file
  */
 void closeLogFile();
@@ -60,7 +65,9 @@ void graphDump(List *list);
  * @param list list with graph
  * @param filename name of graph
  */
-void createGraph(List *list, const char *filename);
+void createGraph(List *list,
+                 const char *filename,
+                 bool physical_order = false);
 
 /**
  * @brief prints element to file

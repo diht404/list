@@ -52,14 +52,18 @@ digraph LIST {
         label="
             VALUE = 993 |
             {{PREV | 6} | {INDEX | 7} | {NEXT | 6}}"]
+    node_1->node_2[style=invis];
+    node_2->node_3[style=invis];
+    node_3->node_4[style=invis];
+    node_4->node_5[style=invis];
+    node_5->node_6[style=invis];
+    node_6->node_7[style=invis];
     head->node_1;
     tail->node_5;
     free->node_6;
     node_0->head;
     node_0->tail;
     node_0->free;
-    subgraph cluster_data{style=filled;color="#caf2d4"
-        head;
         node_1;
     node_1->node_2;
         node_2;
@@ -81,9 +85,6 @@ digraph LIST {
         node_1;
     node_1->node_5[style=dashed];
         tail;
-    }
-    subgraph cluster_free{style=filled;color="#f2d3ca"
-        free;
         node_6;
     node_6->node_7;
         node_7;
@@ -92,5 +93,4 @@ digraph LIST {
     node_6->node_7[style=dashed];
         node_7;
     node_7->node_6[style=dashed];
-    }
 }

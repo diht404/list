@@ -18,6 +18,19 @@ void setLogFile(const char *filename)
     setvbuf(LIST_LOG_FILE, nullptr, _IONBF, 0);
 }
 
+void clearGraphLogFile()
+{
+    char filename[128] = "";
+
+    sprintf(filename,
+            "%s.html",
+            LIST_GRAPH_LOG_FILENAME);
+    FILE *fp = fopen(filename, "w");
+    if (fp == nullptr)
+        return;
+    fclose(fp);
+}
+
 void closeLogFile()
 {
     if (LIST_LOG_FILE != nullptr)
@@ -202,30 +215,40 @@ void graphDump(List *list)
     char photo_name[128] = "";
 
     sprintf(filename,
-            "%s_v.%zu.html",
-            LIST_GRAPH_LOG_FILENAME,
-            LIST_GRAPH_LOG_VERSION);
-    sprintf(photo_name,
-            "%s_v.%zu.jpg",
-            LIST_GRAPH_LOG_FILENAME,
-            LIST_GRAPH_LOG_VERSION);
+            "%s.html",
+            LIST_GRAPH_LOG_FILENAME);
 
-    FILE *fp = fopen(filename, "w");
+    FILE *fp = fopen(filename, "a");
     if (fp == nullptr)
         return;
 
     fprintf(fp, "<pre>\n");
     listDump(list, fp, true);
 
-    createGraph(list, photo_name);
+    fprintf(fp, "Dump in logical order.\n");
+    sprintf(photo_name,
+            "%s_logical_order_v.%zu.jpg",
+            LIST_GRAPH_LOG_FILENAME,
+            LIST_GRAPH_LOG_VERSION);
+    createGraph(list, photo_name, false);
+    fprintf(fp, "<img height=200 src=%s />\n", photo_name);
 
-    fprintf(fp, "<img height=200 src=%s />", photo_name);
+
+    fprintf(fp, "Dump in physical order.\n");
+    sprintf(photo_name,
+            "%s_physical_order_v.%zu.jpg",
+            LIST_GRAPH_LOG_FILENAME,
+            LIST_GRAPH_LOG_VERSION);
+    createGraph(list, photo_name, true);
+    fprintf(fp, "<img height=200 src=%s />\n", photo_name);
 
     fclose(fp);
     LIST_GRAPH_LOG_VERSION++;
 }
 
-void createGraph(List *list, const char *filename)
+void createGraph(List *list,
+                 const char *filename,
+                 bool physical_order)
 {
 
     FILE *fp = fopen(GRAPH_FILENAME, "w");
@@ -281,6 +304,17 @@ void createGraph(List *list, const char *filename)
                 list->data[i].next);
     }
 
+    if (physical_order)
+    {
+        for (size_t i = 1; i < list->capacity - 1; i++)
+            {
+                fprintf(fp,
+                        "    node_%zu->node_%zu[style=invis];\n",
+                        i,
+                        i + 1);
+            }
+    }
+
     // lines from head, tail, free to their nodes
     fprintf(fp, "    head->node_%zu;\n", listHead(list));
     fprintf(fp, "    tail->node_%zu;\n", listTail(list));
@@ -293,10 +327,13 @@ void createGraph(List *list, const char *filename)
 
 
     // group data nodes
-    fprintf(fp,
-            "    subgraph cluster_data{style=filled;color=%s\n",
-            LIGHT_GREEN_COLOR);
-    fprintf(fp, "        head;\n");
+    if (!physical_order)
+    {
+        fprintf(fp,
+                "    subgraph cluster_data{style=filled;color=%s\n",
+                LIGHT_GREEN_COLOR);
+        fprintf(fp, "        head;\n");
+    }
     size_t head = listHead(list);
     size_t counter = 0;
     while (counter < list->size - 1)
@@ -324,13 +361,19 @@ void createGraph(List *list, const char *filename)
     }
 
     fprintf(fp, "        tail;\n");
-    fprintf(fp, "    }\n");
 
-    //group free node
-    fprintf(fp,
-            "    subgraph cluster_free{style=filled;color=%s\n",
-            LIGHT_RED_COLOR);
+    if (!physical_order)
+    {
+        fprintf(fp, "    }\n");
+    }
+//    group free node
+    if (!physical_order)
+    {
+        fprintf(fp,
+                "    subgraph cluster_free{style=filled;color=%s\n",
+                LIGHT_RED_COLOR);
     fprintf(fp, "        free;\n");
+    }
     size_t free_elem = list->free;
     for (size_t i = 0; i < list->capacity - list->size; i++)
     {
@@ -350,7 +393,8 @@ void createGraph(List *list, const char *filename)
                 list->data[free_elem].prev);
         free_elem = list->data[free_elem].prev;
     }
-    fprintf(fp, "    }\n");
+    if (!physical_order)
+        fprintf(fp, "    }\n");
 
     // close graph with }
     fprintf(fp, "}\n");

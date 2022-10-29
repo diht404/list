@@ -3,6 +3,7 @@
 
 int main()
 {
+    clearGraphLogFile();
 //    setLogFile("logs.txt");
     List list = {};
     listCtor(&list, 0);
