@@ -24,7 +24,7 @@ void closeLogFile()
         fclose(LIST_LOG_FILE);
 }
 
-size_t listDump(List *list, FILE *fp)
+size_t listDump(List *list, FILE *fp, bool color_output)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
     CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
@@ -41,25 +41,31 @@ size_t listDump(List *list, FILE *fp)
     }
     fprintf(fp, "\n");
 
+    if (color_output)
+        fprintf(fp, "<span style=\"color:green;\">");
     fprintf(fp, "NEXT: ");
     for (size_t i = 0; i < list->capacity; i++)
-    {
         printSize_t(fp, list->data[i].next);
-    }
+    if (color_output)
+        fprintf(fp, "</span>");
     fprintf(fp, "\n");
 
+    if (color_output)
+        fprintf(fp, "<span style=\"color:blue;\">");
     fprintf(fp, "IND:  ");
     for (size_t i = 0; i < list->capacity; i++)
-    {
         printSize_t(fp, i);
-    }
+    if (color_output)
+        fprintf(fp, "</span>");
     fprintf(fp, "\n");
 
+    if (color_output)
+        fprintf(fp, "<span style=\"color:red;\">");
     fprintf(fp, "PREV: ");
     for (size_t i = 0; i < list->capacity; i++)
-    {
         printSize_t(fp, list->data[i].prev);
-    }
+    if (color_output)
+        fprintf(fp, "</span>");
     fprintf(fp, "\n");
 
     fprintf(fp, "HEAD:     ");
@@ -209,7 +215,7 @@ void graphDump(List *list)
         return;
 
     fprintf(fp, "<pre>\n");
-    listDump(list, fp);
+    listDump(list, fp, true);
 
     createGraph(list, photo_name);
 

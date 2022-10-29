@@ -11,6 +11,11 @@ const char *const LIGHT_GREEN_COLOR = "\"#caf2d4\"";
 const char *const RED_COLOR         = "\"#e87b6b\"";
 const char *const LIGHT_RED_COLOR   = "\"#f2d3ca\"";
 
+const char ANSI_COLOR_RED[] = "\x1b[31m";
+const char ANSI_COLOR_BLUE[] = "\x1b[34m";
+const char ANSI_COLOR_GREEN[] = "\x1b[32m";
+const char ANSI_COLOR_RESET[] = "\x1b[0m";
+
 /**
  * @brief sets log file
  *
@@ -29,7 +34,7 @@ void closeLogFile();
  * @param list list to dump
  * @return error code
  */
-size_t listDump(List *list, FILE *fp);
+size_t listDump(List *list, FILE *fp, bool color_output = false);
 
 /**
  * @brief verifies list
