@@ -26,6 +26,11 @@ struct List
     size_t capacity = 0;
     bool alive = false;
 };
+#define listHead(list) \
+    (list)->data[0].next
+
+#define listTail(list) \
+    (list)->data[0].prev
 
 enum LIST_ERRORS
 {

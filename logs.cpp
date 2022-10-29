@@ -63,11 +63,11 @@ size_t listDump(List *list, FILE *fp)
     fprintf(fp, "\n");
 
     fprintf(fp, "HEAD:     ");
-    printSize_t(fp, list->data[0].next);
+    printSize_t(fp, listHead(list));
     fprintf(fp, "\n");
 
     fprintf(fp, "TAIL:     ");
-    printSize_t(fp, list->data[0].prev);
+    printSize_t(fp, listTail(list));
     fprintf(fp, "\n");
 
     fprintf(fp, "FREE:     ");
@@ -236,9 +236,9 @@ void createGraph(List *list, const char *filename)
                 "    ]\n", 0,
             PURPLE_COLOR,
             list->data[0].value,
-            list->data[0].prev,
+            listTail(list),
             0,
-            list->data[0].next);
+            listHead(list));
 
     // create head, tail, free nodes
     fprintf(fp, "    head[shape=\"record\", "
@@ -276,8 +276,8 @@ void createGraph(List *list, const char *filename)
     }
 
     // lines from head, tail, free to their nodes
-    fprintf(fp, "    head->node_%zu;\n", list->data[0].next);
-    fprintf(fp, "    tail->node_%zu;\n", list->data[0].prev);
+    fprintf(fp, "    head->node_%zu;\n", listHead(list));
+    fprintf(fp, "    tail->node_%zu;\n", listTail(list));
     fprintf(fp, "    free->node_%zu;\n", list->free);
 
     //lines from dummy node to head, tail, free
@@ -291,7 +291,7 @@ void createGraph(List *list, const char *filename)
             "    subgraph cluster_data{style=filled;color=%s\n",
             LIGHT_GREEN_COLOR);
     fprintf(fp, "        head;\n");
-    size_t head = list->data[0].next;
+    size_t head = listHead(list);
     size_t counter = 0;
     while (counter < list->size - 1)
     {
@@ -304,7 +304,7 @@ void createGraph(List *list, const char *filename)
         counter++;
     }
 
-    size_t tail = list->data[0].prev;
+    size_t tail = listTail(list);
     counter = 0;
     while (counter < list->size - 1)
     {

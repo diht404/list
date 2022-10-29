@@ -35,3 +35,5 @@ int main()
     closeLogFile();
     return 0;
 }
+// list of structs
+// вставка, удаление, ctor, dtor
