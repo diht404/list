@@ -4,7 +4,7 @@
 int main()
 {
     clearGraphLogFile();
-//    setLogFile("logs.txt");
+    setLogFile("logs.txt");
     List list = {};
     listCtor(&list);
     listDump(&list, nullptr);

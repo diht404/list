@@ -1,54 +1,54 @@
 digraph LIST {
     rankdir=LR;
-    node_0x559973499480[shape="record", 
+    node_0x562a34f2a480[shape="record", 
         color="#a66be8", 
         style="rounded, filled", 
         label="DUMMY ELEMENT | 
             VALUE = 0 | 
-            {{TAIL | 0x5599734994e0} | {INDEX | 0x559973499480} | {HEAD | 0x559973499520}}"
+            {{TAIL | 0x562a34f2a4e0} | {INDEX | 0x562a34f2a480} | {HEAD | 0x562a34f2a700}}"
     ]
     head[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "HEAD"];
     tail[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "TAIL"];
-    node_0x559973499520[shape="record", 
+    node_0x562a34f2a700[shape="record", 
         color="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 42 |
-            {{PREV | 0x5599734994e0} | {INDEX | 0x559973499520} | {NEXT | 0x5599734994a0}}"]
-    node_0x5599734994a0[shape="record", 
+            {{PREV | 0x562a34f2a4e0} | {INDEX | 0x562a34f2a700} | {NEXT | 0x562a34f2a4a0}}"]
+    node_0x562a34f2a4a0[shape="record", 
         color="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 67 |
-            {{PREV | 0x559973499520} | {INDEX | 0x5599734994a0} | {NEXT | 0x5599734994c0}}"]
-    node_0x5599734994c0[shape="record", 
+            {{PREV | 0x562a34f2a700} | {INDEX | 0x562a34f2a4a0} | {NEXT | 0x562a34f2a4c0}}"]
+    node_0x562a34f2a4c0[shape="record", 
         color="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 13 |
-            {{PREV | 0x5599734994a0} | {INDEX | 0x5599734994c0} | {NEXT | 0x5599734994e0}}"]
-    node_0x5599734994e0[shape="record", 
+            {{PREV | 0x562a34f2a4a0} | {INDEX | 0x562a34f2a4c0} | {NEXT | 0x562a34f2a4e0}}"]
+    node_0x562a34f2a4e0[shape="record", 
         color="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 31 |
-            {{PREV | 0x5599734994c0} | {INDEX | 0x5599734994e0} | {NEXT | 0x559973499520}}"]
-    node_0x559973499480->head->node_0x559973499520;
-    node_0x559973499480->tail->node_0x5599734994e0;
+            {{PREV | 0x562a34f2a4c0} | {INDEX | 0x562a34f2a4e0} | {NEXT | 0x562a34f2a700}}"]
+    node_0x562a34f2a480->head->node_0x562a34f2a700;
+    node_0x562a34f2a480->tail->node_0x562a34f2a4e0;
     subgraph cluster_data{style=filled;color="#caf2d4"
         head;
-        node_0x559973499520;
-    node_0x559973499520->node_0x5599734994a0;
-        node_0x5599734994a0;
-    node_0x5599734994a0->node_0x5599734994c0;
-        node_0x5599734994c0;
-    node_0x5599734994c0->node_0x5599734994e0;
-        node_0x5599734994e0;
-    node_0x5599734994e0->node_0x5599734994c0[style=dashed];
-        node_0x5599734994c0;
-    node_0x5599734994c0->node_0x5599734994a0[style=dashed];
-        node_0x5599734994a0;
-    node_0x5599734994a0->node_0x559973499520[style=dashed];
+        node_0x562a34f2a700;
+    node_0x562a34f2a700->node_0x562a34f2a4a0;
+        node_0x562a34f2a4a0;
+    node_0x562a34f2a4a0->node_0x562a34f2a4c0;
+        node_0x562a34f2a4c0;
+    node_0x562a34f2a4c0->node_0x562a34f2a4e0;
+        node_0x562a34f2a4e0;
+    node_0x562a34f2a4e0->node_0x562a34f2a4c0[style=dashed];
+        node_0x562a34f2a4c0;
+    node_0x562a34f2a4c0->node_0x562a34f2a4a0[style=dashed];
+        node_0x562a34f2a4a0;
+    node_0x562a34f2a4a0->node_0x562a34f2a700[style=dashed];
         tail;
     }
 }

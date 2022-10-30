@@ -223,7 +223,7 @@ void graphDump(List *list)
             LIST_GRAPH_LOG_FILENAME,
             LIST_GRAPH_LOG_VERSION);
     createGraph(list, photo_name);
-    fprintf(fp, "<img height=200 src=%s />\n", photo_name);
+    fprintf(fp, "<img height=100 src=%s />\n", photo_name);
 
     fclose(fp);
     LIST_GRAPH_LOG_VERSION++;
