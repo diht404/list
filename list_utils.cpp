@@ -3,8 +3,6 @@
 size_t listCtor(List *list)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-    // head = list->data[0].next
-    // tail = list->data[0].prev
 
     if (list->alive)
         return LIST_ALREADY_ALIVE;
@@ -51,6 +49,7 @@ size_t listPushFront(List *list, Val_t value)
         return listPushEmpty(list, value);
 
     Elem_t *new_element = (Elem_t *) calloc(1, sizeof(new_element[0]));
+    CHECK_NULLPTR_ERROR(new_element, LIST_CANT_ALLOCATE_MEMORY)
 
     new_element->value = value;
     new_element->prev = listTail(list);
@@ -74,6 +73,7 @@ size_t listPushBack(List *list, Val_t value)
         return listPushEmpty(list, value);
 
     Elem_t *new_element = (Elem_t *) calloc(1, sizeof(Elem_t));
+    CHECK_NULLPTR_ERROR(new_element, LIST_CANT_ALLOCATE_MEMORY)
 
     new_element->value = value;
     new_element->prev = listTail(list);
@@ -104,6 +104,7 @@ size_t listPushEmpty(List *list, Val_t value)
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
     Elem_t *new_element = (Elem_t *) calloc(1, sizeof(Elem_t));
+    CHECK_NULLPTR_ERROR(new_element, LIST_CANT_ALLOCATE_MEMORY)
 
     new_element->value = value;
     new_element->prev = new_element;
@@ -134,6 +135,7 @@ size_t listInsertAfter(List *list, Elem_t *position, Val_t value)
         return listPushBack(list, value);
 
     Elem_t *new_element = (Elem_t *) calloc(1, sizeof(new_element[0]));
+    CHECK_NULLPTR_ERROR(new_element, LIST_CANT_ALLOCATE_MEMORY)
 
     new_element->value = value;
     new_element->next = position->next;
