@@ -10,7 +10,7 @@
  * @param capacity size of array of list
  * @return error code
  */
-size_t listCtor(List *list, size_t capacity = 1);
+size_t listCtor(List *list);
 
 /**
  * @brief destructs list
@@ -48,13 +48,22 @@ size_t listPushFront(List *list, Val_t value);
 size_t listPushBack(List *list, Val_t value);
 
 /**
+ * @brief push to empty list
+ *
+ * @param list list to push
+ * @param value value to push
+ * @return
+ */
+size_t listPushEmpty(List *list, Val_t value);
+
+/**
  * @brief pop from list
  *
  * @param list list to pop
  * @param position position to pop
  * @return error code
  */
-size_t listPop(List *list, size_t position);
+size_t listPop(List *list, Elem_t *position);
 
 /**
  * @brief pop from tail of list
@@ -80,7 +89,7 @@ size_t listPopHead(List *list);
  * @param value value to insert
  * @return error code
  */
-size_t listInsertBefore(List *list, size_t position, Val_t value);
+size_t listInsertBefore(List *list, Elem_t *position, Val_t value);
 
 /**
  * @brief inserts value to list after position
@@ -90,31 +99,7 @@ size_t listInsertBefore(List *list, size_t position, Val_t value);
  * @param value value to insert
  * @return error code
  */
-size_t listInsertAfter(List *list, size_t position, Val_t value);
-
-/**
- * @brief linearizes list
- *
- * @param list list to linearize
- * @return error code
- */
-size_t listLinearize(List *list);
-
-/**
- * @brief resizes list to x2 capacity
- *
- * @param list list to resize
- * @return error code
- */
-size_t listResizeUp(List *list);
-
-/**
- * @brief resizes list to max(capacity/2, capacity - num_free_in_the_end)
- *
- * @param list list to resize
- * @return error code
- */
-size_t listResizeDown(List *list);
+size_t listInsertAfter(List *list, Elem_t *position, Val_t value);
 
 /**
  * @brief finds in list first occurrence (physical index) of value
@@ -127,7 +112,7 @@ size_t listResizeDown(List *list);
  */
 size_t listFirstOccurrence(List *list,
                            Val_t value,
-                           size_t *position,
+                           Elem_t **position,
                            bool *success);
 
 /**
@@ -140,7 +125,8 @@ size_t listFirstOccurrence(List *list,
  */
 size_t listElemByIndex(List *list,
                        size_t index,
-                       size_t *position);
+                       Elem_t **position);
+
 
 /**
  * @brief returns front position
@@ -149,7 +135,7 @@ size_t listElemByIndex(List *list,
  * @param error error code
  * @return front position
  */
-size_t listFront(List *list, size_t *error);
+Elem_t *listFront(List *list, size_t *error);
 
 /**
  * @brief returns back position
@@ -158,15 +144,6 @@ size_t listFront(List *list, size_t *error);
  * @param error error code
  * @return back position
  */
-size_t listBack(List *list, size_t *error);
-
-/**
- * @brief calculates max of two size_t values
- *
- * @param lhs first size_t value
- * @param rhs second size_t value
- * @return max of two size_t values
- */
-size_t max(size_t lhs, size_t rhs);
+Elem_t *listBack(List *list, size_t *error);
 
 #endif //LIST__LIST_UTILS_H

@@ -19,6 +19,11 @@ const char *const LIGHT_RED_COLOR   = "\"#f2d3ca\"";
 void setLogFile(const char *filename);
 
 /**
+ * @brief clears graph log file
+ */
+void clearGraphLogFile();
+
+/**
  * @brief closes log file
  */
 void closeLogFile();
@@ -29,7 +34,7 @@ void closeLogFile();
  * @param list list to dump
  * @return error code
  */
-size_t listDump(List *list, FILE *fp);
+size_t listDump(List *list, FILE *fp, bool color_output = false);
 
 /**
  * @brief verifies list
@@ -77,5 +82,7 @@ void printElem_t(FILE *fp, Val_t elem);
  * @param value value to print
  */
 void printSize_t(FILE *fp, size_t value);
+
+void printPointer(FILE *fp, Elem_t *value);
 
 #endif //LIST__LOGS_H

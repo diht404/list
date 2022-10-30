@@ -13,19 +13,22 @@ const Val_t POISONED_VALUE = 993;
 struct Elem_t
 {
     Val_t value = POISONED_VALUE;
-    size_t prev = 0;
-    size_t next = 0;
-    bool alive = false;
+    Elem_t *prev = nullptr;
+    Elem_t *next = nullptr;
 };
 
 struct List
 {
-    Elem_t *data = nullptr;
-    size_t free = 0;
+    Elem_t *dummy = nullptr;
     size_t size = 0;
-    size_t capacity = 0;
     bool alive = false;
 };
+
+#define listHead(list) \
+    (list)->dummy->next
+
+#define listTail(list) \
+    (list)->dummy->prev
 
 enum LIST_ERRORS
 {

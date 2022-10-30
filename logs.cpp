@@ -18,16 +18,28 @@ void setLogFile(const char *filename)
     setvbuf(LIST_LOG_FILE, nullptr, _IONBF, 0);
 }
 
+void clearGraphLogFile()
+{
+    char filename[128] = "";
+
+    sprintf(filename,
+            "%s.html",
+            LIST_GRAPH_LOG_FILENAME);
+    FILE *fp = fopen(filename, "w");
+    if (fp == nullptr)
+        return;
+    fclose(fp);
+}
+
 void closeLogFile()
 {
     if (LIST_LOG_FILE != nullptr)
         fclose(LIST_LOG_FILE);
 }
 
-size_t listDump(List *list, FILE *fp)
+size_t listDump(List *list, FILE *fp, bool color_output)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-    CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
 
     if (fp == nullptr)
         fp = LIST_LOG_FILE;
@@ -35,76 +47,75 @@ size_t listDump(List *list, FILE *fp)
     logError(listVerifier(list), fp);
 
     fprintf(fp, "DATA: ");
-    for (size_t i = 0; i < list->capacity; i++)
+    Elem_t *position = list->dummy;
+    for (size_t i = 1; i <= list->size; i++)
     {
-        printElem_t(fp, list->data[i].value);
+        printElem_t(fp, position->next->value);
+        position = position->next;
     }
     fprintf(fp, "\n");
 
+    if (color_output)
+        fprintf(fp, "<span style=\"color:green;\">");
     fprintf(fp, "NEXT: ");
-    for (size_t i = 0; i < list->capacity; i++)
+    position = listHead(list);
+    for (size_t i = 1; i <= list->size; i++)
     {
-        printSize_t(fp, list->data[i].next);
+        printPointer(fp, position->next);
+        position = position->next;
     }
+    if (color_output)
+        fprintf(fp, "</span>");
     fprintf(fp, "\n");
 
+    if (color_output)
+        fprintf(fp, "<span style=\"color:blue;\">");
     fprintf(fp, "IND:  ");
-    for (size_t i = 0; i < list->capacity; i++)
+    position = listHead(list);
+    for (size_t i = 1; i <= list->size; i++)
     {
-        printSize_t(fp, i);
+        printPointer(fp, position);
+        position = position->next;
     }
+    if (color_output)
+        fprintf(fp, "</span>");
     fprintf(fp, "\n");
 
+    if (color_output)
+        fprintf(fp, "<span style=\"color:red;\">");
     fprintf(fp, "PREV: ");
-    for (size_t i = 0; i < list->capacity; i++)
+    position = listHead(list);
+    for (size_t i = 1; i <= list->size; i++)
     {
-        printSize_t(fp, list->data[i].prev);
+        printPointer(fp, position->prev);
+        position = position->next;
     }
+    if (color_output)
+        fprintf(fp, "</span>");
     fprintf(fp, "\n");
 
     fprintf(fp, "HEAD:     ");
-    printSize_t(fp, list->data[0].next);
+    printPointer(fp, list->dummy->next);
     fprintf(fp, "\n");
 
     fprintf(fp, "TAIL:     ");
-    printSize_t(fp, list->data[0].prev);
-    fprintf(fp, "\n");
-
-    fprintf(fp, "FREE:     ");
-    printSize_t(fp, list->free);
+    printPointer(fp, list->dummy->prev);
     fprintf(fp, "\n");
 
     fprintf(fp, "SIZE:     ");
     printSize_t(fp, list->size);
     fprintf(fp, "\n");
-
-    fprintf(fp, "CAPACITY: ");
-    printSize_t(fp, list->capacity);
     fprintf(fp, "\n");
+
     return LIST_NO_ERRORS;
 }
 
 size_t listVerifier(List *list)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-    CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
-
-    if (list->size > list->capacity)
-        return LIST_SIZE_MORE_THAN_CAPACITY;
 
     if (!list->alive)
         return LIST_NOT_ALIVE;
-
-    size_t position = list->free;
-    size_t num_verified = 0;
-    do
-    {
-        if (list->data[position].alive)
-            return LIST_INTERSECT_ALIVE_AND_DEAD_ARRAYS;
-        position = list->data[position].next;
-        num_verified++;
-    }
-    while (num_verified < list->capacity - list->size);
 
     return LIST_NO_ERRORS;
 }
@@ -196,24 +207,23 @@ void graphDump(List *list)
     char photo_name[128] = "";
 
     sprintf(filename,
-            "%s_v.%zu.html",
-            LIST_GRAPH_LOG_FILENAME,
-            LIST_GRAPH_LOG_VERSION);
-    sprintf(photo_name,
-            "%s_v.%zu.jpg",
-            LIST_GRAPH_LOG_FILENAME,
-            LIST_GRAPH_LOG_VERSION);
+            "%s.html",
+            LIST_GRAPH_LOG_FILENAME);
 
-    FILE *fp = fopen(filename, "w");
+    FILE *fp = fopen(filename, "a");
     if (fp == nullptr)
         return;
 
     fprintf(fp, "<pre>\n");
-    listDump(list, fp);
+    listDump(list, fp, true);
 
+    fprintf(fp, "Dump in logical order.\n");
+    sprintf(photo_name,
+            "%s_logical_order_v.%zu.jpg",
+            LIST_GRAPH_LOG_FILENAME,
+            LIST_GRAPH_LOG_VERSION);
     createGraph(list, photo_name);
-
-    fprintf(fp, "<img height=200 src=%s />", photo_name);
+    fprintf(fp, "<img height=200 src=%s />\n", photo_name);
 
     fclose(fp);
     LIST_GRAPH_LOG_VERSION++;
@@ -227,20 +237,22 @@ void createGraph(List *list, const char *filename)
                 "    rankdir=LR;\n");
 
     // create dummy node
-    fprintf(fp, "    node_%zu[shape=\"record\", \n"
-                "        color=%s, \n"
-                "        style=\"rounded, filled\", \n"
-                "        label=\"DUMMY ELEMENT | \n"
-                "            VALUE = %d | \n"
-                "            {{TAIL | %zu} | {INDEX | %zu} | {HEAD | %zu}}\"\n"
-                "    ]\n", 0,
+    fprintf(fp,
+            "    node_%p[shape=\"record\", \n"
+            "        color=%s, \n"
+            "        style=\"rounded, filled\", \n"
+            "        label=\"DUMMY ELEMENT | \n"
+            "            VALUE = %d | \n"
+            "            {{TAIL | %p} | {INDEX | %p} | {HEAD | %p}}\"\n"
+            "    ]\n",
+            list->dummy,
             PURPLE_COLOR,
-            list->data[0].value,
-            list->data[0].prev,
-            0,
-            list->data[0].next);
+            list->dummy->value,
+            list->dummy->prev,
+            list->dummy,
+            list->dummy->next);
 
-    // create head, tail, free nodes
+    // create head, tail nodes
     fprintf(fp, "    head[shape=\"record\", "
                 "        color=%s,"
                 "        style=\"rounded, filled\","
@@ -251,99 +263,71 @@ void createGraph(List *list, const char *filename)
                 "        style=\"rounded, filled\","
                 "        label = \""
                 "TAIL\"];\n", BLUE_COLOR);
-    fprintf(fp, "    free[shape=\"record\", "
-                "        color=%s,"
-                "        style=\"rounded, filled\","
-                "        label = \""
-                "FREE\"];\n", BLUE_COLOR);
 
     // create data nodes
-    for (size_t i = 1; i < list->capacity; i++)
+    Elem_t *head = listHead(list);
+    size_t counter = 1;
+    while (counter <= list->size)
     {
         fprintf(fp,
-                "    node_%zu[shape=\"record\", \n"
+                "    node_%p[shape=\"record\", \n"
                 "        color=%s, \n"
                 "        style=\"rounded, filled\", \n"
                 "        label=\"\n"
                 "            VALUE = %d |\n"
-                "            {{PREV | %zu} | {INDEX | %zu} | {NEXT | %zu}}\"]\n",
-                i,
-                list->data[i].alive ? GREEN_COLOR : RED_COLOR,
-                list->data[i].value,
-                list->data[i].prev,
-                i,
-                list->data[i].next);
+                "            {{PREV | %p} | {INDEX | %p} | {NEXT | %p}}\"]\n",
+                head,
+                GREEN_COLOR,
+                head->value,
+                head->prev,
+                head,
+                head->next);
+        head = head->next;
+        counter++;
     }
 
-    // lines from head, tail, free to their nodes
-    fprintf(fp, "    head->node_%zu;\n", list->data[0].next);
-    fprintf(fp, "    tail->node_%zu;\n", list->data[0].prev);
-    fprintf(fp, "    free->node_%zu;\n", list->free);
-
-    //lines from dummy node to head, tail, free
-    fprintf(fp, "    node_0->head;\n");
-    fprintf(fp, "    node_0->tail;\n");
-    fprintf(fp, "    node_0->free;\n");
-
+    //lines from dummy node to head, tail
+    fprintf(fp,
+            "    node_%p->head->node_%p;\n",
+            list->dummy,
+            listHead(list));
+    fprintf(fp,
+            "    node_%p->tail->node_%p;\n",
+            list->dummy,
+            listTail(list));
 
     // group data nodes
     fprintf(fp,
             "    subgraph cluster_data{style=filled;color=%s\n",
             LIGHT_GREEN_COLOR);
     fprintf(fp, "        head;\n");
-    size_t head = list->data[0].next;
-    size_t counter = 0;
-    while (counter < list->size - 1)
-    {
-        fprintf(fp, "        node_%zu;\n", head);
-        fprintf(fp,
-                "    node_%zu->node_%zu;\n",
-                head,
-                list->data[head].next);
-        head = list->data[head].next;
-        counter++;
-    }
-
-    size_t tail = list->data[0].prev;
+    head = listHead(list);
     counter = 0;
     while (counter < list->size - 1)
     {
-        fprintf(fp, "        node_%zu;\n", tail);
+        fprintf(fp, "        node_%p;\n", head);
         fprintf(fp,
-                "    node_%zu->node_%zu[style=dashed];\n",
+                "    node_%p->node_%p;\n",
+                head,
+                head->next);
+        head = head->next;
+        counter++;
+    }
+
+    Elem_t *tail = list->dummy->prev;
+    counter = 0;
+    while (counter < list->size - 1)
+    {
+        fprintf(fp, "        node_%p;\n", tail);
+        fprintf(fp,
+                "    node_%p->node_%p[style=dashed];\n",
                 tail,
-                list->data[tail].prev);
-        tail = list->data[tail].prev;
+                tail->prev);
+        tail = tail->prev;
         counter++;
     }
 
     fprintf(fp, "        tail;\n");
-    fprintf(fp, "    }\n");
-
-    //group free node
-    fprintf(fp,
-            "    subgraph cluster_free{style=filled;color=%s\n",
-            LIGHT_RED_COLOR);
-    fprintf(fp, "        free;\n");
-    size_t free_elem = list->free;
-    for (size_t i = 0; i < list->capacity - list->size; i++)
-    {
-        fprintf(fp, "        node_%zu;\n", free_elem);
-        fprintf(fp,
-                "    node_%zu->node_%zu;\n",
-                free_elem,
-                list->data[free_elem].next);
-        free_elem = list->data[free_elem].next;
-    }
-    for (size_t i = 0; i < list->capacity - list->size; i++)
-    {
-        fprintf(fp, "        node_%zu;\n", free_elem);
-        fprintf(fp,
-                "    node_%zu->node_%zu[style=dashed];\n",
-                free_elem,
-                list->data[free_elem].prev);
-        free_elem = list->data[free_elem].prev;
-    }
     fprintf(fp, "    }\n");
 
     // close graph with }
@@ -362,7 +346,7 @@ void printElem_t(FILE *fp, Val_t elem)
     if (fp == nullptr)
         return;
 
-    fprintf(fp, "%8d ", elem);
+    fprintf(fp, "%16d ", elem);
 }
 
 void printSize_t(FILE *fp, size_t value)
@@ -370,5 +354,13 @@ void printSize_t(FILE *fp, size_t value)
     if (fp == nullptr)
         return;
 
-    fprintf(fp, "%8zu ", value);
+    fprintf(fp, "%16zu ", value);
+}
+
+void printPointer(FILE *fp, Elem_t *value)
+{
+    if (fp == nullptr)
+        return;
+
+    fprintf(fp, "%16p ", value);
 }

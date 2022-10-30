@@ -1,96 +1,54 @@
 digraph LIST {
     rankdir=LR;
-    node_0[shape="record", 
+    node_0x559973499480[shape="record", 
         color="#a66be8", 
         style="rounded, filled", 
         label="DUMMY ELEMENT | 
-            VALUE = 993 | 
-            {{TAIL | 5} | {INDEX | 0} | {HEAD | 1}}"
+            VALUE = 0 | 
+            {{TAIL | 0x5599734994e0} | {INDEX | 0x559973499480} | {HEAD | 0x559973499520}}"
     ]
     head[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "HEAD"];
     tail[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "TAIL"];
-    free[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "FREE"];
-    node_1[shape="record", 
+    node_0x559973499520[shape="record", 
+        color="#6be871", 
+        style="rounded, filled", 
+        label="
+            VALUE = 42 |
+            {{PREV | 0x5599734994e0} | {INDEX | 0x559973499520} | {NEXT | 0x5599734994a0}}"]
+    node_0x5599734994a0[shape="record", 
+        color="#6be871", 
+        style="rounded, filled", 
+        label="
+            VALUE = 67 |
+            {{PREV | 0x559973499520} | {INDEX | 0x5599734994a0} | {NEXT | 0x5599734994c0}}"]
+    node_0x5599734994c0[shape="record", 
         color="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 13 |
-            {{PREV | 5} | {INDEX | 1} | {NEXT | 2}}"]
-    node_2[shape="record", 
-        color="#6be871", 
-        style="rounded, filled", 
-        label="
-            VALUE = 99 |
-            {{PREV | 1} | {INDEX | 2} | {NEXT | 3}}"]
-    node_3[shape="record", 
-        color="#6be871", 
-        style="rounded, filled", 
-        label="
-            VALUE = 66 |
-            {{PREV | 2} | {INDEX | 3} | {NEXT | 4}}"]
-    node_4[shape="record", 
+            {{PREV | 0x5599734994a0} | {INDEX | 0x5599734994c0} | {NEXT | 0x5599734994e0}}"]
+    node_0x5599734994e0[shape="record", 
         color="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 31 |
-            {{PREV | 3} | {INDEX | 4} | {NEXT | 5}}"]
-    node_5[shape="record", 
-        color="#6be871", 
-        style="rounded, filled", 
-        label="
-            VALUE = 26 |
-            {{PREV | 4} | {INDEX | 5} | {NEXT | 1}}"]
-    node_6[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 7} | {INDEX | 6} | {NEXT | 7}}"]
-    node_7[shape="record", 
-        color="#e87b6b", 
-        style="rounded, filled", 
-        label="
-            VALUE = 993 |
-            {{PREV | 6} | {INDEX | 7} | {NEXT | 6}}"]
-    head->node_1;
-    tail->node_5;
-    free->node_6;
-    node_0->head;
-    node_0->tail;
-    node_0->free;
+            {{PREV | 0x5599734994c0} | {INDEX | 0x5599734994e0} | {NEXT | 0x559973499520}}"]
+    node_0x559973499480->head->node_0x559973499520;
+    node_0x559973499480->tail->node_0x5599734994e0;
     subgraph cluster_data{style=filled;color="#caf2d4"
         head;
-        node_1;
-    node_1->node_2;
-        node_2;
-    node_2->node_3;
-        node_3;
-    node_3->node_4;
-        node_4;
-    node_4->node_5;
-        node_5;
-    node_5->node_1;
-        node_5;
-    node_5->node_4[style=dashed];
-        node_4;
-    node_4->node_3[style=dashed];
-        node_3;
-    node_3->node_2[style=dashed];
-        node_2;
-    node_2->node_1[style=dashed];
-        node_1;
-    node_1->node_5[style=dashed];
+        node_0x559973499520;
+    node_0x559973499520->node_0x5599734994a0;
+        node_0x5599734994a0;
+    node_0x5599734994a0->node_0x5599734994c0;
+        node_0x5599734994c0;
+    node_0x5599734994c0->node_0x5599734994e0;
+        node_0x5599734994e0;
+    node_0x5599734994e0->node_0x5599734994c0[style=dashed];
+        node_0x5599734994c0;
+    node_0x5599734994c0->node_0x5599734994a0[style=dashed];
+        node_0x5599734994a0;
+    node_0x5599734994a0->node_0x559973499520[style=dashed];
         tail;
-    }
-    subgraph cluster_free{style=filled;color="#f2d3ca"
-        free;
-        node_6;
-    node_6->node_7;
-        node_7;
-    node_7->node_6;
-        node_6;
-    node_6->node_7[style=dashed];
-        node_7;
-    node_7->node_6[style=dashed];
     }
 }

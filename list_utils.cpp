@@ -1,41 +1,23 @@
 #include "list_utils.h"
 
-size_t listCtor(List *list, size_t capacity)
+size_t listCtor(List *list)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
     // head = list->data[0].next
     // tail = list->data[0].prev
-    if (list->data != nullptr)
-        return LIST_DATA_NOT_NULLPTR;
 
     if (list->alive)
         return LIST_ALREADY_ALIVE;
 
-    if (capacity < 2)
-        capacity = 2;
+    list->dummy = (Elem_t *) calloc(1, sizeof(list->dummy[0]));
 
-    list->data = (Elem_t *) calloc(capacity, sizeof(list->data[0]));
+    CHECK_NULLPTR_ERROR(list->dummy, LIST_DATA_IS_NULLPTR)
 
-    CHECK_NULLPTR_ERROR(list->data, LIST_DATA_IS_NULLPTR)
+    listHead(list) = nullptr;
+    listTail(list) = nullptr;
 
-    list->capacity = capacity;
-
-    // set head, tail and free
-    list->data[0].prev = list->capacity - 1;
-    list->data[0].next = 1;
-    list->data[0].value = POISONED_VALUE;
-
-    // create circle list
-    for (size_t i = 1; i < list->capacity; i++)
-    {
-        list->data[i].next = 1 + i % (list->capacity - 1);
-        list->data[i].prev = (list->capacity + i - 1) % list->capacity;
-        list->data[i].value = POISONED_VALUE;
-    }
-    list->data[1].prev = list->capacity - 1;
-
-    list->size = 1;
-    list->free = 1;
+    list->dummy->value = 0;
+    list->size = 0;
     list->alive = true;
 
     return LIST_NO_ERRORS;
@@ -44,8 +26,18 @@ size_t listCtor(List *list, size_t capacity)
 size_t listDtor(List *list)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+    CHECK_NULLPTR_ERROR(list->dummy, LIST_DATA_IS_NULLPTR)
 
-    free(list->data);
+    Elem_t *position = listHead(list);
+    Elem_t *next_position = nullptr;
+    for (size_t i = 0; i < list->size; i++)
+    {
+        next_position = position->next;
+        free(position);
+        position = next_position;
+    }
+    free(list->dummy);
+
     list->alive = false;
 
     return LIST_NO_ERRORS;
@@ -55,159 +47,120 @@ size_t listPushFront(List *list, Val_t value)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
-    return listPush(list, value);
-}
+    if (list->size == 0)
+        return listPushEmpty(list, value);
 
-size_t listPushBack(List *list, Val_t value)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+    Elem_t *new_element = (Elem_t *) calloc(1, sizeof(new_element[0]));
 
-    return listPush(list, value);
-}
+    new_element->value = value;
+    new_element->prev = listTail(list);
+    new_element->next = listHead(list);
 
-size_t listPush(List *list, Val_t value)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+    listHead(list)->prev = new_element;
+    listTail(list)->next = new_element;
 
-    if (list->capacity - list->size <= 1)
-    {
-        listResizeUp(list);
-    }
-    if (list->capacity > list->size * 4)
-    {
-        listResizeDown(list);
-    }
-
-    list->data[list->free].value = value;
-    // get prev next free indexes
-    size_t prev_free_index = list->data[list->free].prev;
-    size_t next_free_index = list->data[list->free].next;
-
-    // update prev next free elems
-    list->data[prev_free_index].next = next_free_index;
-    list->data[next_free_index].prev = prev_free_index;
-
-    // update prev next elems
-    list->data[list->data[0].next].prev = list->free;
-    list->data[list->data[0].prev].next = list->free;
-
-    // set new elem params
-    list->data[list->free].prev = list->data[0].prev;
-    list->data[list->free].next = list->data[0].next;
-    list->data[list->free].alive = true;
-    // set new free
-    list->data[0].prev = list->free;
-    // update free
-    list->free = next_free_index;
-    list->size += 1;
-
-    return LIST_NO_ERRORS;
-}
-
-size_t listInsertBefore(List *list, size_t position, Val_t value)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-
-    if (!list->data[position].alive)
-        return LIST_TRIED_TO_INSERT_BEFORE_DEAD_ELEMENT;
-
-    if (list->capacity - list->size <= 1)
-    {
-        listResizeUp(list);
-    }
-    if (list->capacity > list->size * 4)
-    {
-        listResizeDown(list);
-    }
-
-    size_t position_to_insert_after = list->data[position].prev;
-
-    return listInsertAfter(list, position_to_insert_after, value);
-}
-
-size_t listInsertAfter(List *list, size_t position, Val_t value)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-
-    if (!list->data[position].alive)
-        return LIST_TRIED_TO_INSERT_AFTER_DEAD_ELEMENT;
-
-    if (list->capacity - list->size <= 1)
-    {
-        listResizeUp(list);
-    }
-    if (list->capacity > list->size * 4)
-    {
-        listResizeDown(list);
-    }
-
-    if (position == list->data[0].prev)
-        return listPush(list, value);
-
-    list->data[list->free].value = value;
-
-    // get prev next free indexes
-    size_t prev_free_index = list->data[list->free].prev;
-    size_t next_free_index = list->data[list->free].next;
-
-    // get prev next indexes
-    size_t prev_index = position;
-    size_t next_index = list->data[position].next;
-
-    // update prev next free elems
-    list->data[prev_free_index].next = next_free_index;
-    list->data[next_free_index].prev = prev_free_index;
-
-    // update prev next elems
-    list->data[next_index].prev = list->free;
-    list->data[position].next = list->free;
-
-    // set new elem params
-    list->data[list->free].next = next_index;
-    list->data[list->free].prev = prev_index;
-    list->data[list->free].alive = true;
-    // update free
-    list->free = next_free_index;
+    listHead(list) = new_element;
 
     list->size++;
 
     return LIST_NO_ERRORS;
 }
 
-size_t listPop(List *list, size_t position)
+size_t listPushBack(List *list, Val_t value)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
 
-    if (!list->data[position].alive)
-        return LIST_TRIED_TO_POP_DEAD_ELEMENT;
+    if (list->size == 0)
+        return listPushEmpty(list, value);
 
-    if (position == list->data[0].prev)
+    Elem_t *new_element = (Elem_t *) calloc(1, sizeof(Elem_t));
+
+    new_element->value = value;
+    new_element->prev = listTail(list);
+    new_element->next = listHead(list);
+
+    listHead(list)->prev = new_element;
+    listTail(list)->next = new_element;
+
+    listTail(list) = new_element;
+
+    list->size++;
+
+    return LIST_NO_ERRORS;
+}
+
+size_t listPush(List *list, Val_t value)
+{
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
+    if (list->size == 0)
+        return listPushEmpty(list, value);
+
+    return listPushBack(list, value);
+}
+
+size_t listPushEmpty(List *list, Val_t value)
+{
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
+    Elem_t *new_element = (Elem_t *) calloc(1, sizeof(Elem_t));
+
+    new_element->value = value;
+    new_element->prev = new_element;
+    new_element->next = new_element;
+
+    listHead(list) = new_element;
+    listTail(list) = new_element;
+
+    list->size++;
+
+    return LIST_NO_ERRORS;
+}
+
+size_t listInsertBefore(List *list, Elem_t *position, Val_t value)
+{
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
+    Elem_t *position_to_insert_after = position->prev;
+
+    return listInsertAfter(list, position_to_insert_after, value);
+}
+
+size_t listInsertAfter(List *list, Elem_t *position, Val_t value)
+{
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
+    if (position == listTail(list))
+        return listPushBack(list, value);
+
+    Elem_t *new_element = (Elem_t *) calloc(1, sizeof(new_element[0]));
+
+    new_element->value = value;
+    new_element->next = position->next;
+    new_element->prev = position;
+
+    position->next = new_element;
+    position->next->prev = new_element;
+
+    list->size++;
+
+    return LIST_NO_ERRORS;
+}
+
+size_t listPop(List *list, Elem_t *position)
+{
+    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
+
+    if (position == listTail(list))
         return listPopTail(list);
 
-    if (position == list->data[0].next)
+    if (position == listHead(list))
         return listPopHead(list);
 
-    // get prev next free indexes
-    size_t prev_free_index = list->data[list->free].prev;
+    position->prev->next = position->next;
+    position->next->prev = position->prev;
 
-    // get prev next indexes
-    size_t prev_index = list->data[position].prev;
-    size_t next_index = list->data[position].next;
-
-    // update prev next indexes
-    list->data[prev_index].next = next_index;
-    list->data[next_index].prev = prev_index;
-
-    // update new free elem
-    list->data[position].alive = false;
-    list->data[position].value = POISONED_VALUE;
-    list->data[position].prev = prev_free_index;
-    list->data[prev_free_index].next = position;
-    list->data[position].next = list->free;
-
-    // update free
-    list->free = position;
-
+    free(position);
     list->size--;
 
     return LIST_NO_ERRORS;
@@ -220,28 +173,14 @@ size_t listPopTail(List *list)
     if (list->size == 0)
         return LIST_TRIED_TO_POP_FROM_EMPTY_LIST;
 
-    // get prev next free indexes
-    size_t prev_free_index = list->data[list->free].prev;
+    Elem_t *tail = listTail(list);
 
-    // get prev next indexes
-    size_t prev_index = list->data[list->data[0].prev].prev;
-    size_t next_index = list->data[0].next;
+    tail->prev->next = listHead(list);
+    tail->next->prev = tail->prev;
 
-    // update prev next indexes
-    list->data[prev_index].next = next_index;
-    list->data[next_index].prev = prev_index;
+    listTail(list) = tail->prev;
 
-    // update new free elem
-    list->data[list->data[0].prev].alive = false;
-    list->data[list->data[0].prev].value = POISONED_VALUE;
-    list->data[list->data[0].prev].prev = prev_free_index;
-    list->data[prev_free_index].next = list->data[0].prev;
-    list->data[list->data[0].prev].next = list->free;
-
-    // update free
-    list->free = list->data[0].prev;
-    // update tail
-    list->data[0].prev = prev_index;
+    free(tail);
 
     list->size--;
 
@@ -255,176 +194,40 @@ size_t listPopHead(List *list)
     if (list->size == 0)
         return LIST_TRIED_TO_POP_FROM_EMPTY_LIST;
 
-    // get prev next free indexes
-    size_t prev_free_index = list->data[list->free].prev;
+    Elem_t *head = listHead(list);
 
-    // get prev next indexes
-    size_t prev_index = list->data[0].prev;
-    size_t next_index = list->data[list->data[0].next].next;
+    head->next->prev = listTail(list);
+    listTail(list)->next = head->next;
 
-    // update prev next indexes
-    list->data[prev_index].next = next_index;
-    list->data[next_index].prev = prev_index;
+    listHead(list) = head->next;
 
-    // update new free elem
-    list->data[list->data[0].next].alive = false;
-    list->data[list->data[0].next].value = POISONED_VALUE;
-    list->data[list->data[0].next].prev = prev_free_index;
-    list->data[prev_free_index].next = list->data[0].next;
-    list->data[list->data[0].next].next = list->free;
-
-    list->free = list->data[0].next;
-    list->data[0].next = next_index;
+    free(head);
 
     list->size--;
 
     return LIST_NO_ERRORS;
 }
 
-size_t listLinearize(List *list)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-
-    Elem_t *new_data =
-        (Elem_t *) calloc(list->capacity, sizeof(new_data[0]));
-
-    CHECK_NULLPTR_ERROR(new_data, LIST_CANT_ALLOCATE_MEMORY)
-
-    size_t pointer = list->data[0].next;
-
-    // copy alive elements to new memory
-    for (size_t i = 1; i < list->size; i++)
-    {
-        new_data[i].next = 1 + i % (list->size - 1);
-        new_data[i].prev = (list->size + i - 1) % list->size;
-        if (i == 1)
-            new_data[i].prev = list->size - 1;
-        new_data[i].value = list->data[pointer].value;
-        pointer = list->data[pointer].next;
-        new_data[i].alive = true;
-    }
-
-    // update dummy element
-    new_data[0].next = 1;
-    new_data[0].prev = list->size - 1;
-    new_data[0].value = POISONED_VALUE;
-
-    free(list->data);
-    list->data = new_data;
-
-    // set not alive elements
-    for (size_t i = list->size; i < list->capacity; i++)
-    {
-        list->data[i].next = (i + 1) % list->capacity;
-        list->data[i].prev = (i - 1) % list->capacity;
-        // set next for last free element
-        if (i == list->capacity - 1)
-            list->data[i].next = list->size;
-        // set prev for first free element
-        if (i == list->size)
-            list->data[i].prev = list->capacity - 1;
-        list->data[i].value = POISONED_VALUE;
-    }
-    // update free
-    list->free = list->size;
-
-    return LIST_NO_ERRORS;
-}
-
-size_t listResizeUp(List *list)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-
-    size_t old_capacity = list->capacity;
-    size_t new_capacity = list->capacity * 2;
-
-    Elem_t *new_data = (Elem_t *) realloc(list->data,
-                                          sizeof(Elem_t)
-                                              * new_capacity);
-
-    CHECK_NULLPTR_ERROR(new_data, LIST_CANT_ALLOCATE_MEMORY)
-
-    list->data = new_data;
-
-    list->capacity = new_capacity;
-    // set new free elements
-    for (size_t i = old_capacity; i < list->capacity; i++)
-    {
-        list->data[i].next = (i + 1) % list->capacity;
-        list->data[i].prev = (i - 1) % list->capacity;
-        list->data[i].value = POISONED_VALUE;
-    }
-    // get last free index before resize
-    size_t prev_free_index = list->data[list->free].prev;
-
-    // update last free element before resize
-    list->data[prev_free_index].next = old_capacity;
-    // update first free element in additional block
-    list->data[old_capacity].prev = prev_free_index;
-
-    // update last free index after resize
-    list->data[list->capacity - 1].next = list->free;
-    // update last free index before resize
-    list->data[list->free].prev = list->capacity - 1;
-    return LIST_NO_ERRORS;
-}
-
-size_t listResizeDown(List *list)
-{
-    CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
-
-    size_t num_free = 0;
-    for (size_t i = list->capacity - 1; i != 0; i--)
-    {
-        if (list->data[i].alive)
-            break;
-        else
-            num_free++;
-    }
-    size_t new_capacity = max(list->capacity / 2,
-                              list->capacity - num_free + 1);
-
-    // get first element, that will be deleted
-    Elem_t first_deleted_element = list->data[new_capacity];
-
-    Elem_t *new_data = (Elem_t *) realloc(list->data,
-                                          sizeof(Elem_t)
-                                              * new_capacity);
-
-    CHECK_NULLPTR_ERROR(new_data, LIST_CANT_ALLOCATE_MEMORY)
-
-    list->data = new_data;
-
-    // update new last free elemtn
-    list->data[first_deleted_element.prev].next = list->free;
-    // update free pointer
-    list->data[list->free].prev = first_deleted_element.prev;
-
-    list->capacity = new_capacity;
-
-    return LIST_NO_ERRORS;
-}
-
 size_t listFirstOccurrence(List *list,
                            Val_t value,
-                           size_t *position,
+                           Elem_t **position,
                            bool *success)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
     CHECK_NULLPTR_ERROR(position, LIST_POSITION_IS_NULLPTR)
 
     size_t num_checked = 0;
-    size_t check_position = list->data[0].next;
+    Elem_t *check_position = listHead(list);
 
     while (num_checked < list->size)
     {
-        if (list->data[check_position].value == value)
+        if (check_position->value == value)
         {
             *position = check_position;
             *success = true;
             return LIST_NO_ERRORS;
         }
-        check_position = list->data[check_position].next;
+        check_position = check_position->next;
         num_checked++;
     }
     *success = false;
@@ -433,49 +236,42 @@ size_t listFirstOccurrence(List *list,
 
 size_t listElemByIndex(List *list,
                        size_t index,
-                       size_t *position)
+                       Elem_t **position)
 {
     CHECK_NULLPTR_ERROR(list, LIST_IS_NULLPTR)
     CHECK_NULLPTR_ERROR(position, LIST_POSITION_IS_NULLPTR)
 
-    size_t check_position = list->data[0].next;
+    Elem_t *check_position = listHead(list);
 
     for (size_t i = 0; i < index % list->size; i++)
     {
-        check_position = list->data[check_position].next;
+        check_position = check_position->next;
     }
     *position = check_position;
 
     return LIST_NO_ERRORS;
 }
 
-size_t listFront(List *list, size_t *error)
+Elem_t *listFront(List *list, size_t *error)
 {
     if (list == nullptr)
     {
         if (error)
             *error = LIST_IS_NULLPTR;
-        return 0;
+        return nullptr;
     }
 
-    return list->data[0].next;
+    return listHead(list);
 }
 
-size_t listBack(List *list, size_t *error)
+Elem_t *listBack(List *list, size_t *error)
 {
     if (list == nullptr)
     {
         if (error)
             *error = LIST_IS_NULLPTR;
-        return 0;
+        return nullptr;
     }
 
-    return list->data[0].prev;
-}
-
-size_t max(size_t lhs, size_t rhs)
-{
-    if (lhs > rhs)
-        return lhs;
-    return rhs;
+    return listTail(list);
 }
