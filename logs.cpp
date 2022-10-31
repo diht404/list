@@ -94,15 +94,15 @@ size_t listDump(List *list, FILE *fp, bool color_output)
         fprintf(fp, "</span>");
     fprintf(fp, "\n");
 
-    fprintf(fp, "HEAD:     ");
+    fprintf(fp, "HEAD: ");
     printPointer(fp, list->dummy->next);
     fprintf(fp, "\n");
 
-    fprintf(fp, "TAIL:     ");
+    fprintf(fp, "TAIL: ");
     printPointer(fp, list->dummy->prev);
     fprintf(fp, "\n");
 
-    fprintf(fp, "SIZE:     ");
+    fprintf(fp, "SIZE: ");
     printSize_t(fp, list->size);
     fprintf(fp, "\n");
     fprintf(fp, "\n");
