@@ -239,7 +239,7 @@ void createGraph(List *list, const char *filename)
     // create dummy node
     fprintf(fp,
             "    node_%p[shape=\"record\", \n"
-            "        color=%s, \n"
+            "        fillcolor=%s, \n"
             "        style=\"rounded, filled\", \n"
             "        label=\"DUMMY ELEMENT | \n"
             "            VALUE = %d | \n"
@@ -254,12 +254,12 @@ void createGraph(List *list, const char *filename)
 
     // create head, tail nodes
     fprintf(fp, "    head[shape=\"record\", "
-                "        color=%s,"
+                "        fillcolor=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
                 "HEAD\"];\n", BLUE_COLOR);
     fprintf(fp, "    tail[shape=\"record\", "
-                "        color=%s,"
+                "        fillcolor=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
                 "TAIL\"];\n", BLUE_COLOR);
@@ -271,7 +271,7 @@ void createGraph(List *list, const char *filename)
     {
         fprintf(fp,
                 "    node_%p[shape=\"record\", \n"
-                "        color=%s, \n"
+                "        fillcolor=%s, \n"
                 "        style=\"rounded, filled\", \n"
                 "        label=\"\n"
                 "            VALUE = %d |\n"
