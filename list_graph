@@ -1,15 +1,15 @@
 digraph LIST {
     rankdir=LR;
     node_0[shape="record", 
-        color="#a66be8", 
+        fillcolor="#a66be8", 
         style="rounded, filled", 
         label="DUMMY ELEMENT | 
             VALUE = 993 | 
             {{TAIL | 5} | {INDEX | 0} | {HEAD | 1}}"
     ]
-    head[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "HEAD"];
-    tail[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "TAIL"];
-    free[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "FREE"];
+    head[shape="record",         fillcolor="#6bcce8",        style="rounded, filled",        label = "HEAD"];
+    tail[shape="record",         fillcolor="#6bcce8",        style="rounded, filled",        label = "TAIL"];
+    free[shape="record",         fillcolor="#6bcce8",        style="rounded, filled",        label = "FREE"];
     node_1[shape="record", 
         fillcolor="#6be871", 
         style="rounded, filled", 
