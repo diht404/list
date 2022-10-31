@@ -11,43 +11,43 @@ digraph LIST {
     tail[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "TAIL"];
     free[shape="record",         color="#6bcce8",        style="rounded, filled",        label = "FREE"];
     node_1[shape="record", 
-        color="#6be871", 
+        fillcolor="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 13 |
             {{PREV | 5} | {INDEX | 1} | {NEXT | 2}}"]
     node_2[shape="record", 
-        color="#6be871", 
+        fillcolor="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 99 |
             {{PREV | 1} | {INDEX | 2} | {NEXT | 3}}"]
     node_3[shape="record", 
-        color="#6be871", 
+        fillcolor="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 66 |
             {{PREV | 2} | {INDEX | 3} | {NEXT | 4}}"]
     node_4[shape="record", 
-        color="#6be871", 
+        fillcolor="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 31 |
             {{PREV | 3} | {INDEX | 4} | {NEXT | 5}}"]
     node_5[shape="record", 
-        color="#6be871", 
+        fillcolor="#6be871", 
         style="rounded, filled", 
         label="
             VALUE = 26 |
             {{PREV | 4} | {INDEX | 5} | {NEXT | 1}}"]
     node_6[shape="record", 
-        color="#e87b6b", 
+        fillcolor="#e87b6b", 
         style="rounded, filled", 
         label="
             VALUE = 993 |
             {{PREV | 7} | {INDEX | 6} | {NEXT | 7}}"]
     node_7[shape="record", 
-        color="#e87b6b", 
+        fillcolor="#e87b6b", 
         style="rounded, filled", 
         label="
             VALUE = 993 |

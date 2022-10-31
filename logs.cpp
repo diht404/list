@@ -291,7 +291,7 @@ void createGraph(List *list,
     {
         fprintf(fp,
                 "    node_%zu[shape=\"record\", \n"
-                "        color=%s, \n"
+                "        fillcolor=%s, \n"
                 "        style=\"rounded, filled\", \n"
                 "        label=\"\n"
                 "            VALUE = %d |\n"

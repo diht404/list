@@ -26,6 +26,7 @@ struct List
     size_t capacity = 0;
     bool alive = false;
 };
+
 #define listHead(list) \
     (list)->data[0].next
 
