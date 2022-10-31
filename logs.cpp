@@ -257,7 +257,7 @@ void createGraph(List *list,
 
     // create dummy node
     fprintf(fp, "    node_%zu[shape=\"record\", \n"
-                "        color=%s, \n"
+                "        fillcolor=%s, \n"
                 "        style=\"rounded, filled\", \n"
                 "        label=\"DUMMY ELEMENT | \n"
                 "            VALUE = %d | \n"
@@ -271,17 +271,17 @@ void createGraph(List *list,
 
     // create head, tail, free nodes
     fprintf(fp, "    head[shape=\"record\", "
-                "        color=%s,"
+                "        fillcolor=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
                 "HEAD\"];\n", BLUE_COLOR);
     fprintf(fp, "    tail[shape=\"record\", "
-                "        color=%s,"
+                "        fillcolor=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
                 "TAIL\"];\n", BLUE_COLOR);
     fprintf(fp, "    free[shape=\"record\", "
-                "        color=%s,"
+                "        fillcolor=%s,"
                 "        style=\"rounded, filled\","
                 "        label = \""
                 "FREE\"];\n", BLUE_COLOR);
